@@ -1,16 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { APP_CONFIG } from '../config/appConfig';
-import { ArrowLeft, Mail, Lock, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, Sparkles, AlertCircle } from 'lucide-react';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login, user } = useAuth();
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  // If user is already authenticated, redirect to profile
+  useEffect(() => {
+    if (user) {
+      navigate('/profile', { replace: true });
+    }
+  }, [user, navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Demo Login submitted for: ${email}`);
+    setError('');
+    setSubmitting(true);
+
+    const result = await login(email, password);
+
+    setSubmitting(false);
+
+    if (result.success) {
+      navigate('/profile');
+    } else {
+      setError(result.message || 'Invalid email or password');
+    }
   };
 
   return (
@@ -43,6 +66,14 @@ export default function Login() {
           </p>
         </div>
 
+        {/* Display Error Banner if error exists */}
+        {error && (
+          <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs font-semibold flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-charcoal-800 mb-1.5">Email Address</label>
@@ -62,9 +93,6 @@ export default function Login() {
           <div>
             <div className="flex justify-between items-center mb-1.5">
               <label className="block text-xs font-bold text-charcoal-800">Password</label>
-              <a href="#forgot" onClick={(e) => { e.preventDefault(); alert("Password reset link sent to demo user!"); }} className="text-xs font-semibold text-brand-700 hover:underline">
-                Forgot password?
-              </a>
             </div>
             <div className="relative">
               <Lock className="w-4 h-4 text-charcoal-400 absolute left-3.5 top-3.5" />
@@ -81,9 +109,10 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full py-3 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 active:bg-brand-800 rounded-xl shadow-soft hover:shadow-floating transition-all"
+            disabled={submitting}
+            className="w-full py-3 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 active:bg-brand-800 rounded-xl shadow-soft hover:shadow-floating transition-all disabled:opacity-50"
           >
-            Log In
+            {submitting ? 'Logging in...' : 'Log In'}
           </button>
         </form>
 

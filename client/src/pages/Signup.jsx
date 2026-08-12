@@ -1,18 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { APP_CONFIG } from '../config/appConfig';
-import { ArrowLeft, User, Mail, Lock, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, User, Mail, Lock, Sparkles, AlertCircle } from 'lucide-react';
 
 export default function Signup() {
   const navigate = useNavigate();
+  const { signup, user } = useAuth();
+  
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  // If user is already authenticated, redirect to profile
+  useEffect(() => {
+    if (user) {
+      navigate('/profile', { replace: true });
+    }
+  }, [user, navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Account created for: ${name} (${email})! Navigating to login...`);
-    navigate('/login');
+    setError('');
+
+    // Client-side validation: Password Confirmation
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
+
+    setSubmitting(true);
+
+    const result = await signup(name, email, password);
+
+    setSubmitting(false);
+
+    if (result.success) {
+      navigate('/profile');
+    } else {
+      setError(result.message || 'Signup failed');
+    }
   };
 
   return (
@@ -44,6 +79,14 @@ export default function Signup() {
             No kitchen scale needed. Track Indian meals naturally.
           </p>
         </div>
+
+        {/* Display Error Banner if error exists */}
+        {error && (
+          <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs font-semibold flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -85,28 +128,33 @@ export default function Signup() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="At least 8 characters"
+                placeholder="At least 6 characters"
                 className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl bg-warmBg border border-warmBg-border focus:border-brand-600 focus:bg-white focus:outline-none transition-all"
               />
             </div>
           </div>
 
-          <div className="space-y-2 pt-1 text-xs text-charcoal-600">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-brand-600" />
-              <span>Free 14-day trial with full access</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-brand-600" />
-              <span>Cancel anytime without commitment</span>
+          <div>
+            <label className="block text-xs font-bold text-charcoal-800 mb-1.5">Confirm Password</label>
+            <div className="relative">
+              <Lock className="w-4 h-4 text-charcoal-400 absolute left-3.5 top-3.5" />
+              <input
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Re-enter password"
+                className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl bg-warmBg border border-warmBg-border focus:border-brand-600 focus:bg-white focus:outline-none transition-all"
+              />
             </div>
           </div>
 
           <button
             type="submit"
-            className="w-full py-3 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 active:bg-brand-800 rounded-xl shadow-soft hover:shadow-floating transition-all"
+            disabled={submitting}
+            className="w-full py-3 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 active:bg-brand-800 rounded-xl shadow-soft hover:shadow-floating transition-all disabled:opacity-50"
           >
-            Create Free Account
+            {submitting ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
 

@@ -3,6 +3,7 @@ export const APP_CONFIG = {
   tagline: "Indian Nutrition • Made Simple",
   logoUrl: "/logo.png",
   heroImageUrl: "/hero.jpg",
+  apiBaseUrl: "http://localhost:5000/api",
   navLinks: [
     { label: "How It Works", href: "#how-it-works" },
     { label: "Features", href: "#features" },
@@ -13,5 +14,6 @@ export const APP_CONFIG = {
     home: "/",
     login: "/login",
     signup: "/signup",
+    profile: "/profile",
   }
 };

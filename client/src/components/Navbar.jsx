@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, ArrowRight } from 'lucide-react';
+import { Menu, X, ArrowRight, User as UserIcon, LogOut } from 'lucide-react';
 import { APP_CONFIG } from '../config/appConfig';
+import { useAuth } from '../context/AuthContext';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const handleNavClick = (e, href) => {
     if (href.startsWith('#')) {
@@ -16,6 +18,12 @@ export default function Navbar() {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     }
+  };
+
+  const handleLogout = async () => {
+    setMobileMenuOpen(false);
+    await logout();
+    navigate('/login');
   };
 
   return (
@@ -53,29 +61,59 @@ export default function Navbar() {
 
           {/* Right: Action Buttons (Desktop) */}
           <div className="hidden md:flex items-center gap-4">
-            <button
-              onClick={() => navigate(APP_CONFIG.routes.login)}
-              className="text-sm font-semibold text-charcoal-700 hover:text-brand-700 px-4 py-2 rounded-lg hover:bg-sage-100/60 transition-colors"
-            >
-              Log in
-            </button>
-            <button
-              onClick={() => navigate(APP_CONFIG.routes.login)}
-              className="inline-flex items-center justify-center gap-2 text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 active:bg-brand-800 px-5 py-2.5 rounded-xl shadow-soft hover:shadow-floating hover:-translate-y-0.5 transition-all"
-            >
-              Get Started
-              <ArrowRight className="w-4 h-4" />
-            </button>
+            {user ? (
+              <>
+                <button
+                  onClick={() => navigate(APP_CONFIG.routes.profile)}
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-charcoal-800 bg-white border border-warmBg-border px-4 py-2 rounded-xl shadow-soft-sm hover:border-brand-300 transition-colors"
+                >
+                  <UserIcon className="w-4 h-4 text-brand-600" />
+                  <span>{user.name}</span>
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="text-sm font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => navigate(APP_CONFIG.routes.login)}
+                  className="text-sm font-semibold text-charcoal-700 hover:text-brand-700 px-4 py-2 rounded-lg hover:bg-sage-100/60 transition-colors"
+                >
+                  Log in
+                </button>
+                <button
+                  onClick={() => navigate(APP_CONFIG.routes.login)}
+                  className="inline-flex items-center justify-center gap-2 text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 active:bg-brand-800 px-5 py-2.5 rounded-xl shadow-soft hover:shadow-floating hover:-translate-y-0.5 transition-all"
+                >
+                  Get Started
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </>
+            )}
           </div>
 
           {/* Mobile Hamburger Button */}
           <div className="flex items-center gap-3 md:hidden">
-            <button
-              onClick={() => navigate(APP_CONFIG.routes.login)}
-              className="text-xs font-semibold text-white bg-brand-600 px-3.5 py-2 rounded-lg shadow-soft"
-            >
-              Get Started
-            </button>
+            {user ? (
+              <button
+                onClick={() => navigate(APP_CONFIG.routes.profile)}
+                className="text-xs font-semibold text-brand-700 bg-brand-50 px-3 py-1.5 rounded-lg border border-brand-200"
+              >
+                {user.name}
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate(APP_CONFIG.routes.login)}
+                className="text-xs font-semibold text-white bg-brand-600 px-3.5 py-2 rounded-lg shadow-soft"
+              >
+                Get Started
+              </button>
+            )}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-lg text-charcoal-700 hover:bg-sage-100 transition-colors"
@@ -104,24 +142,46 @@ export default function Navbar() {
             ))}
           </nav>
           <div className="pt-2 border-t border-warmBg-border/80 flex flex-col gap-2">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                navigate(APP_CONFIG.routes.login);
-              }}
-              className="w-full text-center py-2.5 text-base font-semibold text-charcoal-800 bg-white border border-warmBg-border rounded-xl shadow-soft-sm"
-            >
-              Log in
-            </button>
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                navigate(APP_CONFIG.routes.login);
-              }}
-              className="w-full text-center py-2.5 text-base font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-soft"
-            >
-              Get Started
-            </button>
+            {user ? (
+              <>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate(APP_CONFIG.routes.profile);
+                  }}
+                  className="w-full text-center py-2.5 text-base font-semibold text-charcoal-800 bg-white border border-warmBg-border rounded-xl shadow-soft-sm"
+                >
+                  My Profile ({user.name})
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-center py-2.5 text-base font-semibold text-rose-700 bg-rose-50 rounded-xl"
+                >
+                  Log out
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate(APP_CONFIG.routes.login);
+                  }}
+                  className="w-full text-center py-2.5 text-base font-semibold text-charcoal-800 bg-white border border-warmBg-border rounded-xl shadow-soft-sm"
+                >
+                  Log in
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate(APP_CONFIG.routes.login);
+                  }}
+                  className="w-full text-center py-2.5 text-base font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-soft"
+                >
+                  Get Started
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
