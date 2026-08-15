@@ -91,6 +91,21 @@ export default function Profile() {
     }
   };
 
+  const formatActivityLevel = (level) => {
+    switch (level) {
+      case 'sedentary':
+        return 'Sedentary';
+      case 'lightly_active':
+        return 'Lightly Active';
+      case 'moderately_active':
+        return 'Moderately Active';
+      case 'very_active':
+        return 'Very Active';
+      default:
+        return level ? level.replace(/_/g, ' ') : 'Not set';
+    }
+  };
+
   const formatAllergies = (allergies) => {
     if (!allergies || allergies.length === 0 || allergies.includes('none')) {
       return 'No known allergies';
@@ -223,6 +238,16 @@ export default function Profile() {
             </div>
 
             <div className="space-y-2.5 pt-1">
+              <div className="p-3.5 bg-warmBg rounded-2xl border border-warmBg-border flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-brand-600" />
+                  <span className="text-xs font-semibold text-charcoal-600">Activity Level</span>
+                </div>
+                <span className="text-xs font-extrabold text-charcoal-900">
+                  {formatActivityLevel(profile.activityLevel)}
+                </span>
+              </div>
+
               <div className="p-3.5 bg-warmBg rounded-2xl border border-warmBg-border flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Target className="w-4 h-4 text-brand-600" />

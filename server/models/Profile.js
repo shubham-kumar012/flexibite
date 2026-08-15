@@ -44,6 +44,11 @@ const profileSchema = new mongoose.Schema(
         enum: ['kg'],
       },
     },
+    activityLevel: {
+      type: String,
+      required: [true, 'Activity level is required'],
+      enum: ['sedentary', 'lightly_active', 'moderately_active', 'very_active'],
+    },
     goal: {
       type: String,
       required: [true, 'Goal is required'],

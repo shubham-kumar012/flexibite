@@ -12,6 +12,7 @@ export const createOrUpdateProfile = async (req, res) => {
       gender,
       height,
       weight,
+      activityLevel,
       goal,
       targetWeight,
       dietaryPreference,
@@ -38,6 +39,14 @@ export const createOrUpdateProfile = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: 'Please provide a valid weight in kg greater than 0',
+      });
+    }
+
+    const validActivityLevels = ['sedentary', 'lightly_active', 'moderately_active', 'very_active'];
+    if (!activityLevel || !validActivityLevels.includes(activityLevel)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please select a valid activity level',
       });
     }
 
@@ -79,6 +88,7 @@ export const createOrUpdateProfile = async (req, res) => {
         value: weight.value,
         unit: 'kg',
       },
+      activityLevel,
       goal,
       targetWeight: targetWeight && targetWeight.value ? {
         value: targetWeight.value,

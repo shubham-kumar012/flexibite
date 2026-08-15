@@ -87,6 +87,29 @@ const GOAL_OPTIONS = [
   },
 ];
 
+const ACTIVITY_LEVEL_OPTIONS = [
+  {
+    id: 'sedentary',
+    title: 'Sedentary',
+    desc: 'Little or no regular exercise; mostly sitting during the day.',
+  },
+  {
+    id: 'lightly_active',
+    title: 'Lightly Active',
+    desc: 'Light exercise or sports around 1–3 days per week.',
+  },
+  {
+    id: 'moderately_active',
+    title: 'Moderately Active',
+    desc: 'Regular exercise or sports around 3–5 days per week.',
+  },
+  {
+    id: 'very_active',
+    title: 'Very Active',
+    desc: 'Hard exercise, sports, or a physically active lifestyle most days.',
+  },
+];
+
 export default function Onboarding() {
   const navigate = useNavigate();
   const { token, user } = useAuth();
@@ -102,6 +125,7 @@ export default function Onboarding() {
     gender: 'prefer_not_to_say',
     heightValue: '',
     weightValue: '',
+    activityLevel: '',
     goal: 'maintain_weight',
     targetWeightValue: '',
     dietaryPreference: '',
@@ -137,6 +161,7 @@ export default function Onboarding() {
             gender: p.gender || 'prefer_not_to_say',
             heightValue: p.height?.value ? String(p.height.value) : '',
             weightValue: p.weight?.value ? String(p.weight.value) : '',
+            activityLevel: p.activityLevel || '',
             goal: p.goal || 'maintain_weight',
             targetWeightValue: p.targetWeight?.value ? String(p.targetWeight.value) : '',
             dietaryPreference: p.dietaryPreference || '',
@@ -184,6 +209,10 @@ export default function Onboarding() {
       }
       if (Number(formData.weightValue) < 20 || Number(formData.weightValue) > 300) {
         setError('Please enter a weight between 20 kg and 300 kg.');
+        return false;
+      }
+      if (!formData.activityLevel) {
+        setError('Please select your activity level.');
         return false;
       }
     }
@@ -302,13 +331,14 @@ export default function Onboarding() {
           value: Number(formData.weightValue),
           unit: 'kg',
         },
+        activityLevel: formData.activityLevel,
         goal: formData.goal,
         targetWeight:
           formData.targetWeightValue && (formData.goal === 'lose_weight' || formData.goal === 'gain_weight')
             ? {
-                value: Number(formData.targetWeightValue),
-                unit: 'kg',
-              }
+              value: Number(formData.targetWeightValue),
+              unit: 'kg',
+            }
             : undefined,
         dietaryPreference: formData.dietaryPreference,
         allergies: formData.allergies,
@@ -371,7 +401,7 @@ export default function Onboarding() {
 
       {/* Onboarding Container */}
       <div className="max-w-2xl mx-auto w-full my-8 bg-white p-6 sm:p-10 rounded-3xl border border-warmBg-border shadow-floating space-y-8">
-        
+
         {/* Header & Step Indicator */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -393,20 +423,17 @@ export default function Onboarding() {
               return (
                 <div key={step.id} className="flex flex-col items-center gap-2">
                   <div
-                    className={`w-full h-2 rounded-full transition-all duration-300 ${
-                      isCompleted || isCurrent ? 'bg-brand-600' : 'bg-warmBg-muted'
-                    }`}
+                    className={`w-full h-2 rounded-full transition-all duration-300 ${isCompleted || isCurrent ? 'bg-brand-600' : 'bg-warmBg-muted'
+                      }`}
                   />
                   <div className="flex items-center gap-1.5 text-xs">
                     <StepIcon
-                      className={`w-3.5 h-3.5 hidden sm:inline ${
-                        isCurrent ? 'text-brand-600 font-bold' : isCompleted ? 'text-brand-700' : 'text-charcoal-400'
-                      }`}
+                      className={`w-3.5 h-3.5 hidden sm:inline ${isCurrent ? 'text-brand-600 font-bold' : isCompleted ? 'text-brand-700' : 'text-charcoal-400'
+                        }`}
                     />
                     <span
-                      className={`text-[11px] font-semibold text-center hidden sm:inline ${
-                        isCurrent ? 'text-charcoal-900 font-extrabold' : isCompleted ? 'text-charcoal-700' : 'text-charcoal-400'
-                      }`}
+                      className={`text-[11px] font-semibold text-center hidden sm:inline ${isCurrent ? 'text-charcoal-900 font-extrabold' : isCompleted ? 'text-charcoal-700' : 'text-charcoal-400'
+                        }`}
                     >
                       {step.name}
                     </span>
@@ -427,7 +454,7 @@ export default function Onboarding() {
 
         {/* STEP FORM CONTENTS */}
         <form onSubmit={(e) => { e.preventDefault(); if (currentStep === 4) handleSubmit(e); }}>
-          
+
           {/* STEP 1 — ABOUT YOU */}
           {currentStep === 1 && (
             <div className="space-y-6">
@@ -475,11 +502,10 @@ export default function Onboarding() {
                         type="button"
                         key={g.id}
                         onClick={() => setFormData({ ...formData, gender: g.id })}
-                        className={`p-3 rounded-xl border text-xs font-bold transition-all text-center ${
-                          formData.gender === g.id
+                        className={`p-3 rounded-xl border text-xs font-bold transition-all text-center ${formData.gender === g.id
                             ? 'bg-brand-50 border-brand-600 text-brand-800 shadow-soft-sm'
                             : 'bg-warmBg border-warmBg-border text-charcoal-700 hover:border-brand-300'
-                        }`}
+                          }`}
                       >
                         {g.label}
                       </button>
@@ -553,6 +579,47 @@ export default function Onboarding() {
                 </div>
               </div>
 
+              {/* Activity Level Selection */}
+              <div className="space-y-3 pt-2">
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-800">
+                    Activity Level <span className="text-rose-500">*</span>
+                  </label>
+                  <p className="text-xs text-charcoal-500 mt-1 font-medium">
+                    This helps us understand your typical daily activity and will be used later to estimate your nutrition needs.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {ACTIVITY_LEVEL_OPTIONS.map((act) => {
+                    const isSelected = formData.activityLevel === act.id;
+                    return (
+                      <div
+                        key={act.id}
+                        onClick={() => setFormData({ ...formData, activityLevel: act.id })}
+                        className={`p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${isSelected
+                            ? 'border-brand-600 bg-brand-50/50 shadow-soft-sm'
+                            : 'border-warmBg-border bg-white hover:border-brand-300'
+                          }`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className="font-display font-extrabold text-sm text-charcoal-900">{act.title}</h4>
+                          <div
+                            className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${isSelected ? 'border-brand-600 bg-brand-600 text-white' : 'border-charcoal-300'
+                              }`}
+                          >
+                            {isSelected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                          </div>
+                        </div>
+                        <p className="text-xs text-charcoal-600 font-medium mt-1.5 leading-relaxed">
+                          {act.desc}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
               <div className="p-3 bg-brand-50/70 border border-brand-200/60 rounded-xl text-xs text-brand-800 font-medium">
                 🔒 Your nutrition targets are estimates based on the information you provide.
               </div>
@@ -577,11 +644,10 @@ export default function Onboarding() {
                   <div
                     key={g.id}
                     onClick={() => setFormData({ ...formData, goal: g.id })}
-                    className={`p-4 sm:p-5 rounded-2xl border-2 cursor-pointer transition-all flex items-start justify-between gap-4 ${
-                      formData.goal === g.id
+                    className={`p-4 sm:p-5 rounded-2xl border-2 cursor-pointer transition-all flex items-start justify-between gap-4 ${formData.goal === g.id
                         ? 'border-brand-600 bg-brand-50/50 shadow-soft-sm'
                         : 'border-warmBg-border bg-white hover:border-brand-300'
-                    }`}
+                      }`}
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
@@ -594,9 +660,8 @@ export default function Onboarding() {
                     </div>
 
                     <div
-                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-1 ${
-                        formData.goal === g.id ? 'border-brand-600 bg-brand-600 text-white' : 'border-charcoal-300'
-                      }`}
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-1 ${formData.goal === g.id ? 'border-brand-600 bg-brand-600 text-white' : 'border-charcoal-300'
+                        }`}
                     >
                       {formData.goal === g.id && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                     </div>
@@ -653,11 +718,10 @@ export default function Onboarding() {
                     <div
                       key={d.id}
                       onClick={() => setFormData({ ...formData, dietaryPreference: d.id })}
-                      className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all space-y-1.5 ${
-                        formData.dietaryPreference === d.id
+                      className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all space-y-1.5 ${formData.dietaryPreference === d.id
                           ? 'border-brand-600 bg-brand-50/50 shadow-soft-sm'
                           : 'border-warmBg-border bg-white hover:border-brand-300'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-display font-extrabold text-sm text-charcoal-900">{d.title}</span>
@@ -684,11 +748,10 @@ export default function Onboarding() {
                         type="button"
                         key={allergy.id}
                         onClick={() => toggleAllergy(allergy.id)}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
-                          isSelected
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${isSelected
                             ? 'bg-brand-600 text-white shadow-soft-sm'
                             : 'bg-warmBg text-charcoal-700 border border-warmBg-border hover:border-brand-300'
-                        }`}
+                          }`}
                       >
                         {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                         <span>{allergy.label}</span>
