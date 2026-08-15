@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
+import profileRoutes from './routes/profileRoutes.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -32,6 +33,9 @@ app.get('/api/health', (req, res) => {
 
 // Authentication Routes
 app.use('/api/auth', authRoutes);
+
+// Profile Routes
+app.use('/api/profile', profileRoutes);
 
 // Connect to MongoDB and start express server
 const startServer = async () => {

@@ -6,7 +6,7 @@ import { ArrowLeft, User, Mail, Lock, Sparkles, AlertCircle } from 'lucide-react
 
 export default function Signup() {
   const navigate = useNavigate();
-  const { signup, user } = useAuth();
+  const { signup, user, token } = useAuth();
   
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -15,12 +15,12 @@ export default function Signup() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // If user is already authenticated, redirect to profile
+  // If user is already authenticated when visiting /signup
   useEffect(() => {
-    if (user) {
-      navigate('/profile', { replace: true });
+    if (user && token) {
+      navigate('/onboarding', { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, token, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,7 +44,8 @@ export default function Signup() {
     setSubmitting(false);
 
     if (result.success) {
-      navigate('/profile');
+      // New user registration always goes to profile onboarding first
+      navigate('/onboarding');
     } else {
       setError(result.message || 'Signup failed');
     }

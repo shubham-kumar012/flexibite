@@ -6,19 +6,48 @@ import { ArrowLeft, Mail, Lock, Sparkles, AlertCircle } from 'lucide-react';
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login, user } = useAuth();
-  
+  const { login, user, token } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // If user is already authenticated, redirect to profile
-  useEffect(() => {
-    if (user) {
-      navigate('/profile', { replace: true });
+  // Helper function to check onboarding completion & redirect accordingly
+  const checkOnboardingAndRedirect = async (authToken) => {
+    const activeToken = authToken || token || localStorage.getItem('token');
+    if (!activeToken) {
+      navigate('/login');
+      return;
     }
-  }, [user, navigate]);
+
+    try {
+      const response = await fetch(`${APP_CONFIG.apiBaseUrl}/profile`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${activeToken}`,
+        },
+      });
+
+      const data = await response.json();
+      if (response.ok && data.success && data.profileCompleted) {
+        navigate('/profile', { replace: true });
+      } else {
+        navigate('/onboarding', { replace: true });
+      }
+    } catch (err) {
+      console.error('Error checking profile status during login redirect:', err);
+      navigate('/onboarding', { replace: true });
+    }
+  };
+
+  // If user is already authenticated when visiting /login page
+  useEffect(() => {
+    if (user && token) {
+      checkOnboardingAndRedirect(token);
+    }
+  }, [user, token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,11 +56,11 @@ export default function Login() {
 
     const result = await login(email, password);
 
-    setSubmitting(false);
-
     if (result.success) {
-      navigate('/profile');
+      const currentToken = localStorage.getItem('token');
+      await checkOnboardingAndRedirect(currentToken);
     } else {
+      setSubmitting(false);
       setError(result.message || 'Invalid email or password');
     }
   };

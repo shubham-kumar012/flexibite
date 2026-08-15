@@ -15,5 +15,6 @@ export const APP_CONFIG = {
     login: "/login",
     signup: "/signup",
     profile: "/profile",
+    onboarding: "/onboarding",
   }
 };
