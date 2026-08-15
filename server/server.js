@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
+import nutritionTargetRoutes from './routes/nutritionTargetRoutes.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -36,6 +37,9 @@ app.use('/api/auth', authRoutes);
 
 // Profile Routes
 app.use('/api/profile', profileRoutes);
+
+// Nutrition Target Routes
+app.use('/api/nutrition-targets', nutritionTargetRoutes);
 
 // Connect to MongoDB and start express server
 const startServer = async () => {
