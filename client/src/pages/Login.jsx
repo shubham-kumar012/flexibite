@@ -32,7 +32,7 @@ export default function Login() {
 
       const data = await response.json();
       if (response.ok && data.success && data.profileCompleted) {
-        navigate('/profile', { replace: true });
+        navigate('/dashboard', { replace: true });
       } else {
         navigate('/onboarding', { replace: true });
       }

@@ -355,13 +355,27 @@ export default function Onboarding() {
       });
 
       const data = await response.json();
-      setLoading(false);
 
       if (response.ok && data.success) {
-        navigate('/profile', {
-          state: { message: 'Your profile has been set up successfully.' },
+        // Automatically recalculate nutrition targets after profile save
+        try {
+          await fetch(`${APP_CONFIG.apiBaseUrl}/nutrition-targets/generate`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        } catch (genErr) {
+          console.error('Error auto-generating targets during profile save:', genErr);
+        }
+
+        setLoading(false);
+        navigate('/nutrition-plan', {
+          state: { message: 'Profile updated successfully. Your nutrition targets have been updated.' },
         });
       } else {
+        setLoading(false);
         setError(data.message || 'Failed to save profile. Please try again.');
       }
     } catch (err) {
