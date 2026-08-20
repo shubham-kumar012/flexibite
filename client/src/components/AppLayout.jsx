@@ -15,6 +15,7 @@ import {
   Menu,
   X,
   Sparkles,
+  ShieldCheck,
 } from 'lucide-react';
 
 export default function AppLayout({ children }) {
@@ -42,6 +43,16 @@ export default function AppLayout({ children }) {
       icon: ClipboardList,
       active: true,
     },
+    ...(user?.role === 'admin'
+      ? [
+          {
+            label: 'Admin Foods',
+            path: '/admin/foods',
+            icon: ShieldCheck,
+            active: true,
+          },
+        ]
+      : []),
     {
       label: "Today's Diet",
       path: '#',

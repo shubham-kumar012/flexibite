@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import fileURLToPath from 'url';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import connectDB from '../config/db.js';
@@ -19,10 +19,10 @@ dotenv.config();
  */
 const importFoods = async () => {
   try {
-    const __filename = fileURLToPath(import.meta.url);
-    const scriptDir = path.dirname(__filename);
+    // Determine path relative to this script or process root
+    const scriptDir = path.dirname(new URL(import.meta.url).pathname).replace(/^\/([A-Z]:)/, '$1');
     const serverDir = path.resolve(scriptDir, '..');
-    const csvPath = path.join(serverDir, 'data', 'test_food_data.csv');
+    const csvPath = path.join(serverDir, 'data', 'food_data.csv');
     const foodsImagesDir = path.join(serverDir, 'data', 'foods');
 
     console.log('Connecting to MongoDB...');
