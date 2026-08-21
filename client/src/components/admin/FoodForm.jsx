@@ -618,7 +618,7 @@ export default function FoodForm({ initialValues, onSubmit, isSubmitting, title 
               </label>
               <input
                 type="text"
-                placeholder="foods/naan/image.webp"
+                placeholder="foods/naan.webp"
                 value={formData.image.key}
                 onChange={(e) =>
                   setFormData((prev) => ({

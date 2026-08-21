@@ -42,7 +42,7 @@ export const createSlug = (name) => {
 
 /**
  * Verifies if a local image exists for the given food slug.
- * Expected path: <foodsDirectory>/<slug>/image.webp
+ * Expected path: <foodsDirectory>/<slug>.webp
  *
  * @param {string} slug
  * @param {string} foodsDirectory
@@ -50,9 +50,24 @@ export const createSlug = (name) => {
  */
 export const checkImageExists = (slug, foodsDirectory) => {
   if (!slug || !foodsDirectory) return false;
-  const directPath = path.join(foodsDirectory, slug, 'image.webp');
+
+  // Direct file path check for <foodsDirectory>/<slug>.webp
+  const directPath = path.join(foodsDirectory, `${slug}.webp`);
   if (fs.existsSync(directPath)) return true;
 
+  // Check for other supported image extensions: <foodsDirectory>/<slug>.<ext>
+  const extensions = ['.jpg', '.jpeg', '.png'];
+  for (const ext of extensions) {
+    if (fs.existsSync(path.join(foodsDirectory, `${slug}${ext}`))) {
+      return true;
+    }
+  }
+
+  // Legacy fallback: <foodsDirectory>/<slug>/image.webp
+  const legacyImagePath = path.join(foodsDirectory, slug, 'image.webp');
+  if (fs.existsSync(legacyImagePath)) return true;
+
+  // Legacy folder fallback: check inside <foodsDirectory>/<slug>/
   const folderPath = path.join(foodsDirectory, slug);
   if (fs.existsSync(folderPath) && fs.statSync(folderPath).isDirectory()) {
     const files = fs.readdirSync(folderPath);

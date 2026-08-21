@@ -63,6 +63,7 @@ const importFoods = async () => {
       const imageExists = checkImageExists(foodData.slug, foodsImagesDir);
       if (imageExists) {
         imagesFoundCount++;
+        foodData.image.key = `foods/${foodData.slug}.webp`;
       } else {
         imagesMissingCount++;
         missingImageSlugs.push(foodData.name);

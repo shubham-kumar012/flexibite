@@ -86,7 +86,7 @@ const validateFoods = async () => {
       const hasImage = checkImageExists(food.slug, foodsImagesDir);
       if (!hasImage) {
         missingImagesCount++;
-        foodIssues.push(`Local image missing on disk (foods/${food.slug}/image.webp)`);
+        foodIssues.push(`Local image missing on disk (foods/${food.slug}.webp)`);
       }
 
       if (foodIssues.length === 0) {
