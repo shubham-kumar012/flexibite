@@ -21,9 +21,9 @@ export default function Hero() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          
+
           {/* Left Column: Text & CTAs */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
@@ -92,18 +92,18 @@ export default function Hero() {
           >
             {/* Image Container with Organic Frame & Soft Glow */}
             <div className="relative w-full max-w-md lg:max-w-none">
-              
+
               {/* Outer decorative ring */}
-              <div className="absolute -inset-3 bg-gradient-to-tr from-brand-200/50 via-warmAccent-100/40 to-sage-200/50 rounded-3xl blur-lg opacity-80 -z-10" />
+              <div className="absolute -inset-3 bg-gradient-to-tr from-brand-200/50 via-warmAccent-100/40 to-sage-200/50 rounded-2xl blur-lg opacity-80 -z-10" />
 
               {/* Main Rounded Image Box */}
-              <div className="relative rounded-3xl overflow-hidden bg-white border border-warmBg-border shadow-soft-xl group">
+              <div className="relative rounded-2xl overflow-hidden bg-white border border-warmBg-border shadow-soft-xl group">
                 <img
                   src={APP_CONFIG.heroImageUrl}
                   alt="Traditional Indian Meal - Thali with Dal, Roti, Rice and Sabzi"
                   className="w-full h-[380px] sm:h-[440px] object-cover object-center transform group-hover:scale-105 transition-transform duration-700"
                 />
-                
+
                 {/* Subtle bottom gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/40 via-transparent to-transparent pointer-events-none" />
 

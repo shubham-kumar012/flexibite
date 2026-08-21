@@ -33,7 +33,7 @@ export default function HowItWorks() {
   return (
     <section id="how-it-works" className="py-16 sm:py-24 bg-warmBg relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-100 text-brand-800 text-xs font-bold uppercase tracking-wider">
@@ -60,11 +60,11 @@ export default function HowItWorks() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.15 }}
                 whileHover={{ y: -6 }}
-                className="bg-white p-8 rounded-3xl border border-warmBg-border shadow-soft flex flex-col justify-between relative overflow-hidden group hover:shadow-floating transition-all duration-300"
+                className="bg-white p-8 rounded-2xl border border-warmBg-border shadow-soft flex flex-col justify-between relative overflow-hidden group hover:shadow-floating transition-all duration-300"
               >
                 {/* Step Indicator */}
                 <div className="flex items-center justify-between mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-brand-50 border border-brand-200/60 text-brand-700 flex items-center justify-center font-bold text-lg group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 rounded-xl bg-brand-50 border border-brand-200/60 text-brand-700 flex items-center justify-center font-bold text-lg group-hover:scale-110 transition-transform">
                     <IconComponent className="w-6 h-6 text-brand-600" />
                   </div>
                   <span className="font-display font-extrabold text-3xl text-sage-300 group-hover:text-brand-500 transition-colors">

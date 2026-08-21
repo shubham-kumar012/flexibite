@@ -45,7 +45,7 @@ export default function DietaryPreferences() {
   return (
     <section className="py-16 sm:py-24 bg-white border-y border-warmBg-border/70">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-14">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-xs font-bold uppercase tracking-wider">
@@ -68,11 +68,10 @@ export default function DietaryPreferences() {
               <button
                 key={pref.id}
                 onClick={() => setSelectedPref(pref.id)}
-                className={`p-4 rounded-2xl border text-center font-bold text-sm transition-all duration-200 flex flex-col items-center gap-2 ${
-                  isSelected
+                className={`p-4 rounded-2xl border text-center font-bold text-sm transition-all duration-200 flex flex-col items-center gap-2 ${isSelected
                     ? 'bg-brand-600 text-white border-brand-600 shadow-soft'
                     : 'bg-warmBg text-charcoal-700 border-warmBg-border hover:border-brand-300'
-                }`}
+                  }`}
               >
                 <span className="text-2xl">{pref.icon}</span>
                 <span>{pref.title}</span>
@@ -87,7 +86,7 @@ export default function DietaryPreferences() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35 }}
-          className="max-w-3xl mx-auto bg-warmBg p-8 rounded-3xl border border-warmBg-border shadow-soft text-center space-y-4"
+          className="max-w-3xl mx-auto bg-warmBg p-8 rounded-2xl border border-warmBg-border shadow-soft text-center space-y-4"
         >
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 border border-brand-200/80 text-brand-700 text-xs font-bold">
             <CheckCircle2 className="w-3.5 h-3.5" />

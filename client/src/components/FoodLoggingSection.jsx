@@ -30,7 +30,7 @@ export default function FoodLoggingSection() {
   return (
     <section className="py-16 sm:py-24 bg-white border-y border-warmBg-border/70 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-xs font-bold uppercase tracking-wider">
@@ -46,11 +46,11 @@ export default function FoodLoggingSection() {
 
         {/* Timeline & Progress Dashboard Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-5xl mx-auto items-center">
-          
+
           {/* Left Timeline */}
           <div className="lg:col-span-6 space-y-4">
             <h3 className="text-xs uppercase font-extrabold text-charcoal-500 tracking-wider mb-2">Logged Today</h3>
-            
+
             {timeline.map((entry, i) => (
               <motion.div
                 key={entry.time}
@@ -83,7 +83,7 @@ export default function FoodLoggingSection() {
           <div className="lg:col-span-6">
             <motion.div
               whileHover={{ scale: 1.01 }}
-              className="bg-warmBg p-6 sm:p-8 rounded-3xl border border-warmBg-border shadow-soft space-y-6"
+              className="bg-warmBg p-6 sm:p-8 rounded-2xl border border-warmBg-border shadow-soft space-y-6"
             >
               <div className="flex items-center justify-between border-b border-warmBg-border/80 pb-4">
                 <div className="flex items-center gap-2">

@@ -58,7 +58,7 @@ export default function GoalsSection() {
   return (
     <section id="features" className="py-16 sm:py-24 bg-white border-y border-warmBg-border/70">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-14">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-xs font-bold uppercase tracking-wider">
@@ -81,11 +81,10 @@ export default function GoalsSection() {
               <button
                 key={goal.id}
                 onClick={() => setActiveTab(goal.id)}
-                className={`flex items-center gap-2.5 px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-200 border ${
-                  isActive
+                className={`flex items-center gap-2.5 px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-200 border ${isActive
                     ? 'bg-brand-600 text-white border-brand-600 shadow-soft-sm'
                     : 'bg-warmBg text-charcoal-700 border-warmBg-border hover:border-brand-300'
-                }`}
+                  }`}
               >
                 <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-brand-600'}`} />
                 <span>{goal.title}</span>
@@ -100,11 +99,11 @@ export default function GoalsSection() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="max-w-4xl mx-auto bg-warmBg p-6 sm:p-10 rounded-3xl border border-warmBg-border shadow-soft grid grid-cols-1 md:grid-cols-12 gap-8 items-center"
+          className="max-w-4xl mx-auto bg-warmBg p-6 sm:p-10 rounded-2xl border border-warmBg-border shadow-soft grid grid-cols-1 md:grid-cols-12 gap-8 items-center"
         >
           {/* Left info */}
           <div className="md:col-span-6 space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-white border border-warmBg-border text-xs font-bold text-charcoal-800">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white border border-warmBg-border text-xs font-bold text-charcoal-800">
               <span className="w-2 h-2 rounded-full bg-brand-500 animate-ping" />
               <span>{currentGoal.title} Mode</span>
             </div>

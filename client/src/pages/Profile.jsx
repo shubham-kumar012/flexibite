@@ -154,13 +154,13 @@ export default function Profile() {
         )}
 
         {/* User Account Info */}
-        <div className="bg-white p-6 rounded-3xl border border-warmBg-border shadow-soft-sm space-y-4">
+        <div className="bg-white p-6 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-4">
           <h2 className="text-xs font-extrabold uppercase tracking-wider text-charcoal-800">
             Account Info
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="flex items-center gap-3 p-3.5 bg-warmBg rounded-2xl border border-warmBg-border">
-              <div className="p-2 bg-white rounded-xl text-brand-600 shadow-soft-sm">
+            <div className="flex items-center gap-3 p-3.5 bg-warmBg rounded-xl border border-warmBg-border">
+              <div className="p-2 bg-white rounded-lg text-brand-600 shadow-soft-sm">
                 <UserIcon className="w-4 h-4" />
               </div>
               <div>
@@ -169,8 +169,8 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-3.5 bg-warmBg rounded-2xl border border-warmBg-border">
-              <div className="p-2 bg-white rounded-xl text-brand-600 shadow-soft-sm">
+            <div className="flex items-center gap-3 p-3.5 bg-warmBg rounded-xl border border-warmBg-border">
+              <div className="p-2 bg-white rounded-lg text-brand-600 shadow-soft-sm">
                 <Mail className="w-4 h-4" />
               </div>
               <div className="overflow-hidden">
@@ -183,7 +183,7 @@ export default function Profile() {
 
         {/* Nutrition Profile Details */}
         {profileCompleted && profile ? (
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-warmBg-border shadow-soft-sm space-y-6">
+          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-6">
             <div className="flex items-center justify-between pb-2 border-b border-warmBg-border">
               <h2 className="text-xs font-extrabold uppercase tracking-wider text-charcoal-800 flex items-center gap-1.5">
                 <Activity className="w-4 h-4 text-brand-600" />
@@ -201,19 +201,19 @@ export default function Profile() {
             </div>
 
             <div className="grid grid-cols-3 gap-3">
-              <div className="p-3.5 bg-warmBg rounded-2xl border border-warmBg-border text-center space-y-1">
+              <div className="p-3.5 bg-warmBg rounded-xl border border-warmBg-border text-center space-y-1">
                 <span className="block text-[11px] font-semibold text-charcoal-500">Age</span>
                 <span className="text-base font-extrabold text-charcoal-900">{profile.age}</span>
               </div>
 
-              <div className="p-3.5 bg-warmBg rounded-2xl border border-warmBg-border text-center space-y-1">
+              <div className="p-3.5 bg-warmBg rounded-xl border border-warmBg-border text-center space-y-1">
                 <span className="block text-[11px] font-semibold text-charcoal-500">Height</span>
                 <span className="text-base font-extrabold text-charcoal-900">
                   {profile.height?.value} cm
                 </span>
               </div>
 
-              <div className="p-3.5 bg-warmBg rounded-2xl border border-warmBg-border text-center space-y-1">
+              <div className="p-3.5 bg-warmBg rounded-xl border border-warmBg-border text-center space-y-1">
                 <span className="block text-[11px] font-semibold text-charcoal-500">Weight</span>
                 <span className="text-base font-extrabold text-charcoal-900">
                   {profile.weight?.value} kg
@@ -222,14 +222,14 @@ export default function Profile() {
             </div>
 
             <div className="space-y-2.5">
-              <div className="p-3.5 bg-warmBg rounded-2xl border border-warmBg-border flex items-center justify-between">
+              <div className="p-3.5 bg-warmBg rounded-xl border border-warmBg-border flex items-center justify-between">
                 <span className="text-xs font-semibold text-charcoal-600">Activity Level</span>
                 <span className="text-xs font-extrabold text-charcoal-900">
                   {formatActivityLevel(profile.activityLevel)}
                 </span>
               </div>
 
-              <div className="p-3.5 bg-warmBg rounded-2xl border border-warmBg-border flex items-center justify-between">
+              <div className="p-3.5 bg-warmBg rounded-xl border border-warmBg-border flex items-center justify-between">
                 <span className="text-xs font-semibold text-charcoal-600">Goal</span>
                 <div className="text-right">
                   <span className="text-xs font-extrabold text-brand-800 bg-brand-50 px-2.5 py-0.5 rounded-full border border-brand-200/60">
@@ -243,14 +243,14 @@ export default function Profile() {
                 </div>
               </div>
 
-              <div className="p-3.5 bg-warmBg rounded-2xl border border-warmBg-border flex items-center justify-between">
+              <div className="p-3.5 bg-warmBg rounded-xl border border-warmBg-border flex items-center justify-between">
                 <span className="text-xs font-semibold text-charcoal-600">Dietary Preference</span>
                 <span className="text-xs font-extrabold text-charcoal-900">
                   {formatDiet(profile.dietaryPreference)}
                 </span>
               </div>
 
-              <div className="p-3.5 bg-warmBg rounded-2xl border border-warmBg-border flex items-start justify-between gap-4">
+              <div className="p-3.5 bg-warmBg rounded-xl border border-warmBg-border flex items-start justify-between gap-4">
                 <span className="text-xs font-semibold text-charcoal-600">Allergies</span>
                 <span className="text-xs font-bold text-charcoal-900 text-right">
                   {formatAllergies(profile.allergies)}
@@ -258,13 +258,13 @@ export default function Profile() {
               </div>
 
               {profile.dislikedFoods && profile.dislikedFoods.length > 0 && (
-                <div className="p-3.5 bg-warmBg rounded-2xl border border-warmBg-border flex items-start justify-between gap-4">
+                <div className="p-3.5 bg-warmBg rounded-xl border border-warmBg-border flex items-start justify-between gap-4">
                   <span className="text-xs font-semibold text-charcoal-600">Foods Disliked</span>
                   <div className="flex flex-wrap gap-1 justify-end">
                     {profile.dislikedFoods.map((food) => (
                       <span
                         key={food}
-                        className="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-white border border-warmBg-border text-charcoal-800"
+                        className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-white border border-warmBg-border text-charcoal-800"
                       >
                         {food}
                       </span>
@@ -285,7 +285,7 @@ export default function Profile() {
             </div>
           </div>
         ) : (
-          <div className="p-6 bg-sage-50 border border-sage-200 rounded-3xl text-center space-y-3">
+          <div className="p-6 bg-sage-50 border border-sage-200 rounded-2xl text-center space-y-3">
             <p className="text-xs font-semibold text-charcoal-700">
               You haven't completed your body profile setup yet.
             </p>

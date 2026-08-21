@@ -414,7 +414,7 @@ export default function Onboarding() {
       </div>
 
       {/* Onboarding Container */}
-      <div className="max-w-2xl mx-auto w-full my-8 bg-white p-6 sm:p-10 rounded-3xl border border-warmBg-border shadow-floating space-y-8">
+      <div className="max-w-2xl mx-auto w-full my-8 bg-white p-6 sm:p-10 rounded-2xl border border-warmBg-border shadow-floating space-y-8">
 
         {/* Header & Step Indicator */}
         <div className="space-y-4">

@@ -6,7 +6,7 @@ export default function ProblemSection() {
   return (
     <section id="about" className="py-16 sm:py-24 bg-white/70 border-y border-warmBg-border/70 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sage-100 text-brand-800 text-xs font-bold uppercase tracking-wider">
@@ -35,15 +35,15 @@ export default function ProblemSection() {
 
         {/* Contrasting Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          
+
           {/* Card 1: Traditional Tracking */}
           <motion.div
             whileHover={{ y: -4 }}
-            className="p-6 sm:p-8 rounded-3xl bg-slate-50 border border-slate-200/90 shadow-soft-sm relative overflow-hidden"
+            className="p-6 sm:p-8 rounded-2xl bg-slate-50 border border-slate-200/90 shadow-soft-sm relative overflow-hidden"
           >
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-rose-100/80 text-rose-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-rose-100/80 text-rose-600 flex items-center justify-center">
                   <Scale className="w-5 h-5" />
                 </div>
                 <div>
@@ -83,9 +83,9 @@ export default function ProblemSection() {
           {/* Card 2: FlexiBite Approach */}
           <motion.div
             whileHover={{ y: -4 }}
-            className="p-6 sm:p-8 rounded-3xl bg-emerald-50/70 border-2 border-brand-500/40 shadow-floating relative overflow-hidden"
+            className="p-6 sm:p-8 rounded-2xl bg-emerald-50/70 border-2 border-brand-500/40 shadow-floating relative overflow-hidden"
           >
-            <div className="absolute top-0 right-0 bg-brand-600 text-white text-[11px] font-extrabold uppercase px-4 py-1 rounded-bl-2xl tracking-wider">
+            <div className="absolute top-0 right-0 bg-brand-600 text-white text-[11px] font-extrabold uppercase px-4 py-1 rounded-bl-xl tracking-wider">
               Recommended
             </div>
 

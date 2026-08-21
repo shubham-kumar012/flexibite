@@ -36,7 +36,7 @@ export default function WeeklyInsights() {
   return (
     <section id="nutrition" className="py-16 sm:py-24 bg-warmBg relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-100 text-brand-800 text-xs font-bold uppercase tracking-wider">
@@ -52,9 +52,9 @@ export default function WeeklyInsights() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-5xl mx-auto items-start">
-          
+
           {/* Left: Weekly Nutrition Analytics Box */}
-          <div className="lg:col-span-5 bg-white p-6 sm:p-8 rounded-3xl border border-warmBg-border shadow-soft space-y-6">
+          <div className="lg:col-span-5 bg-white p-6 sm:p-8 rounded-2xl border border-warmBg-border shadow-soft space-y-6">
             <div className="flex items-center justify-between border-b border-warmBg-border pb-4">
               <div>
                 <h3 className="font-display font-extrabold text-lg text-charcoal-900">Your Weekly Nutrition</h3>

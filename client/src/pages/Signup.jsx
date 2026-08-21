@@ -7,7 +7,7 @@ import { ArrowLeft, User, Mail, Lock, Sparkles, AlertCircle } from 'lucide-react
 export default function Signup() {
   const navigate = useNavigate();
   const { signup, user, token } = useAuth();
-  
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -66,8 +66,8 @@ export default function Signup() {
       </div>
 
       {/* Main Signup Form Container */}
-      <div className="max-w-md mx-auto w-full my-12 bg-white p-8 sm:p-10 rounded-3xl border border-warmBg-border shadow-floating space-y-6">
-        
+      <div className="max-w-md mx-auto w-full my-12 bg-white p-8 sm:p-10 rounded-2xl border border-warmBg-border shadow-floating space-y-6">
+
         <div className="text-center space-y-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 border border-brand-200/60 text-brand-700 text-xs font-bold uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" />

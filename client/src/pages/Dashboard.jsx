@@ -123,7 +123,7 @@ export default function Dashboard() {
     <AppLayout>
       <div className="space-y-8 max-w-5xl mx-auto">
         {/* DASHBOARD HEADER */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl border border-warmBg-border shadow-soft-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 sm:p-8 rounded-2xl border border-warmBg-border shadow-soft-sm">
           <div className="space-y-1">
             <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-charcoal-900">
               {getGreeting()}, {user?.name || 'User'} 👋
@@ -144,7 +144,7 @@ export default function Dashboard() {
 
         {/* ALERTS */}
         {error && (
-          <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-rose-700 text-xs font-semibold flex items-center gap-2.5 animate-fadeIn">
+          <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs font-semibold flex items-center gap-2.5 animate-fadeIn">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -154,7 +154,7 @@ export default function Dashboard() {
         {nutritionTarget && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Today's Calorie Target */}
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-warmBg-border shadow-soft-sm space-y-4 flex flex-col justify-between">
+            <div className="bg-white p-6 sm:p-8 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-4 flex flex-col justify-between">
               <div>
                 <span className="text-xs font-extrabold uppercase tracking-wider text-brand-700 bg-brand-50 px-2.5 py-1 rounded-full border border-brand-200/60 inline-block mb-3">
                   Today's Target
@@ -181,7 +181,7 @@ export default function Dashboard() {
             </div>
 
             {/* Goal Summary */}
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-warmBg-border shadow-soft-sm space-y-4 flex flex-col justify-between">
+            <div className="bg-white p-6 sm:p-8 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-4 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-extrabold uppercase tracking-wider text-charcoal-800 flex items-center gap-1.5">
@@ -234,7 +234,7 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {/* Protein Target */}
-              <div className="bg-white p-5 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-2">
+              <div className="bg-white p-5 rounded-xl border border-warmBg-border shadow-soft-sm space-y-2">
                 <span className="text-xs font-extrabold text-indigo-900 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200/60 inline-block">
                   Protein
                 </span>
@@ -247,7 +247,7 @@ export default function Dashboard() {
               </div>
 
               {/* Carbohydrates Target */}
-              <div className="bg-white p-5 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-2">
+              <div className="bg-white p-5 rounded-xl border border-warmBg-border shadow-soft-sm space-y-2">
                 <span className="text-xs font-extrabold text-emerald-900 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200/60 inline-block">
                   Carbs
                 </span>
@@ -260,7 +260,7 @@ export default function Dashboard() {
               </div>
 
               {/* Fat Target */}
-              <div className="bg-white p-5 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-2">
+              <div className="bg-white p-5 rounded-xl border border-warmBg-border shadow-soft-sm space-y-2">
                 <span className="text-xs font-extrabold text-amber-900 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200/60 inline-block">
                   Fat
                 </span>
@@ -277,7 +277,7 @@ export default function Dashboard() {
 
         {/* 3. PROFILE SNAPSHOT */}
         {profile && (
-          <div className="bg-white p-6 rounded-3xl border border-warmBg-border shadow-soft-sm space-y-4">
+          <div className="bg-white p-6 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-xs font-extrabold uppercase tracking-wider text-charcoal-800 flex items-center gap-1.5">
                 <Activity className="w-4 h-4 text-brand-600" />
@@ -318,9 +318,9 @@ export default function Dashboard() {
         )}
 
         {/* 4. FOOD TRACKING EMPTY STATE */}
-        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-warmBg-border shadow-soft-sm space-y-4 text-center">
+        <div className="bg-white p-6 sm:p-8 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-4 text-center">
           <div className="max-w-md mx-auto space-y-2">
-            <div className="w-12 h-12 bg-warmBg rounded-2xl flex items-center justify-center mx-auto text-charcoal-400 border border-warmBg-border">
+            <div className="w-12 h-12 bg-warmBg rounded-xl flex items-center justify-center mx-auto text-charcoal-400 border border-warmBg-border">
               <Utensils className="w-6 h-6" />
             </div>
             <h3 className="font-display font-extrabold text-lg text-charcoal-900">

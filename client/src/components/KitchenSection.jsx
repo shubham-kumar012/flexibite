@@ -27,7 +27,7 @@ export default function KitchenSection() {
   return (
     <section className="py-16 sm:py-24 bg-warmBg relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-14">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-warmAccent-100 text-warmAccent-700 text-xs font-bold uppercase tracking-wider">
@@ -43,9 +43,9 @@ export default function KitchenSection() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start max-w-5xl mx-auto">
-          
+
           {/* Left: Interactive Pantry Items Selector */}
-          <div className="lg:col-span-6 bg-white p-6 sm:p-8 rounded-3xl border border-warmBg-border shadow-soft space-y-6">
+          <div className="lg:col-span-6 bg-white p-6 sm:p-8 rounded-2xl border border-warmBg-border shadow-soft space-y-6">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-display font-extrabold text-lg text-charcoal-900">Your Available Pantry</h3>
@@ -61,11 +61,10 @@ export default function KitchenSection() {
                 <button
                   key={item.id}
                   onClick={() => toggleItem(item.id)}
-                  className={`p-3 rounded-2xl border text-left flex items-center justify-between transition-all ${
-                    item.selected
+                  className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${item.selected
                       ? 'bg-brand-50/70 border-brand-300 text-charcoal-900 shadow-soft-sm'
                       : 'bg-warmBg/50 border-warmBg-border text-charcoal-500 opacity-60 hover:opacity-100'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-2.5 overflow-hidden">
                     <span className="text-lg">{item.icon}</span>
@@ -75,9 +74,8 @@ export default function KitchenSection() {
                     </div>
                   </div>
                   <div
-                    className={`w-5 h-5 rounded-lg flex items-center justify-center text-xs font-bold ${
-                      item.selected ? 'bg-brand-600 text-white' : 'bg-warmBg-border text-charcoal-400'
-                    }`}
+                    className={`w-5 h-5 rounded-md flex items-center justify-center text-xs font-bold ${item.selected ? 'bg-brand-600 text-white' : 'bg-warmBg-border text-charcoal-400'
+                      }`}
                   >
                     {item.selected ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                   </div>
@@ -95,7 +93,7 @@ export default function KitchenSection() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="bg-white p-6 sm:p-8 rounded-3xl border-2 border-brand-500/40 shadow-floating relative overflow-hidden space-y-6"
+                className="bg-white p-6 sm:p-8 rounded-2xl border-2 border-brand-500/40 shadow-floating relative overflow-hidden space-y-6"
               >
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-600 text-white text-xs font-bold uppercase tracking-wider">
                   <Utensils className="w-3 h-3" />

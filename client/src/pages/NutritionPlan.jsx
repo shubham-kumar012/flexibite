@@ -143,8 +143,8 @@ export default function NutritionPlan() {
   if (error && !nutritionTarget) {
     return (
       <AppLayout>
-        <div className="max-w-md mx-auto my-12 p-6 bg-white rounded-3xl border border-warmBg-border shadow-soft-sm text-center space-y-4">
-          <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center mx-auto text-rose-600 border border-rose-200">
+        <div className="max-w-md mx-auto my-12 p-6 bg-white rounded-2xl border border-warmBg-border shadow-soft-sm text-center space-y-4">
+          <div className="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center mx-auto text-rose-600 border border-rose-200">
             <AlertCircle className="w-6 h-6" />
           </div>
           <h2 className="font-display font-extrabold text-lg text-charcoal-900">
@@ -183,14 +183,14 @@ export default function NutritionPlan() {
 
         {/* ALERTS */}
         {error && (
-          <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-rose-700 text-xs font-semibold flex items-center gap-2.5 animate-fadeIn">
+          <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs font-semibold flex items-center gap-2.5 animate-fadeIn">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         {successMsg && (
-          <div className="p-4 bg-brand-50 border border-brand-200 rounded-2xl text-brand-800 text-xs font-bold flex items-center justify-between gap-2 animate-fadeIn">
+          <div className="p-4 bg-brand-50 border border-brand-200 rounded-xl text-brand-800 text-xs font-bold flex items-center justify-between gap-2 animate-fadeIn">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-brand-600 shrink-0" />
               <span>{successMsg}</span>
@@ -203,7 +203,7 @@ export default function NutritionPlan() {
 
         {/* 1. DAILY CALORIE TARGET CARD */}
         {nutritionTarget && (
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-warmBg-border shadow-soft-sm space-y-4">
+          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
                 <span className="block text-xs font-extrabold uppercase tracking-wider text-charcoal-500 mb-1">
@@ -238,7 +238,7 @@ export default function NutritionPlan() {
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {/* Protein Card */}
-              <div className="bg-white p-6 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-2">
+              <div className="bg-white p-6 rounded-xl border border-warmBg-border shadow-soft-sm space-y-2">
                 <span className="text-xs font-extrabold text-indigo-900 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200/60 inline-block">
                   Protein
                 </span>
@@ -252,7 +252,7 @@ export default function NutritionPlan() {
               </div>
 
               {/* Carbohydrates Card */}
-              <div className="bg-white p-6 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-2">
+              <div className="bg-white p-6 rounded-xl border border-warmBg-border shadow-soft-sm space-y-2">
                 <span className="text-xs font-extrabold text-emerald-900 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200/60 inline-block">
                   Carbohydrates
                 </span>
@@ -266,7 +266,7 @@ export default function NutritionPlan() {
               </div>
 
               {/* Fat Card */}
-              <div className="bg-white p-6 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-2">
+              <div className="bg-white p-6 rounded-xl border border-warmBg-border shadow-soft-sm space-y-2">
                 <span className="text-xs font-extrabold text-amber-900 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200/60 inline-block">
                   Fat
                 </span>
@@ -284,7 +284,7 @@ export default function NutritionPlan() {
 
         {/* 3. HOW YOUR TARGET WAS CALCULATED */}
         {nutritionTarget && profile && (
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-warmBg-border shadow-soft-sm space-y-6">
+          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-6">
             <div>
               <h2 className="font-display text-lg font-extrabold text-charcoal-900 flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-brand-600" />
@@ -298,7 +298,7 @@ export default function NutritionPlan() {
             {/* Step-by-step flow cards */}
             <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 text-center">
               {/* Step 1: BMR */}
-              <div className="p-4 bg-warmBg rounded-2xl border border-warmBg-border space-y-1 flex flex-col justify-between">
+              <div className="p-4 bg-warmBg rounded-xl border border-warmBg-border space-y-1 flex flex-col justify-between">
                 <span className="block text-[11px] font-bold uppercase tracking-wider text-charcoal-500">
                   BMR
                 </span>
@@ -309,7 +309,7 @@ export default function NutritionPlan() {
               </div>
 
               {/* Arrow / Step 2: Activity */}
-              <div className="p-4 bg-warmBg rounded-2xl border border-warmBg-border space-y-1 flex flex-col justify-between">
+              <div className="p-4 bg-warmBg rounded-xl border border-warmBg-border space-y-1 flex flex-col justify-between">
                 <span className="block text-[11px] font-bold uppercase tracking-wider text-charcoal-500">
                   Activity
                 </span>
@@ -320,7 +320,7 @@ export default function NutritionPlan() {
               </div>
 
               {/* Step 3: Maintenance */}
-              <div className="p-4 bg-warmBg rounded-2xl border border-warmBg-border space-y-1 flex flex-col justify-between">
+              <div className="p-4 bg-warmBg rounded-xl border border-warmBg-border space-y-1 flex flex-col justify-between">
                 <span className="block text-[11px] font-bold uppercase tracking-wider text-charcoal-500">
                   Estimated Maintenance
                 </span>
@@ -331,7 +331,7 @@ export default function NutritionPlan() {
               </div>
 
               {/* Step 4: Goal Adjustment */}
-              <div className="p-4 bg-warmBg rounded-2xl border border-warmBg-border space-y-1 flex flex-col justify-between">
+              <div className="p-4 bg-warmBg rounded-xl border border-warmBg-border space-y-1 flex flex-col justify-between">
                 <span className="block text-[11px] font-bold uppercase tracking-wider text-charcoal-500">
                   Goal Adjustment
                 </span>
@@ -342,7 +342,7 @@ export default function NutritionPlan() {
               </div>
 
               {/* Step 5: Daily Target */}
-              <div className="p-4 bg-brand-50 rounded-2xl border border-brand-200 space-y-1 flex flex-col justify-between">
+              <div className="p-4 bg-brand-50 rounded-xl border border-brand-200 space-y-1 flex flex-col justify-between">
                 <span className="block text-[11px] font-bold uppercase tracking-wider text-brand-800">
                   Daily Target
                 </span>
@@ -372,7 +372,7 @@ export default function NutritionPlan() {
             </div>
 
             {/* TRANSPARENCY NOTE */}
-            <div className="p-3.5 bg-sage-50 rounded-2xl border border-sage-200 text-xs text-charcoal-600 flex items-start gap-2.5">
+            <div className="p-3.5 bg-sage-50 rounded-xl border border-sage-200 text-xs text-charcoal-600 flex items-start gap-2.5">
               <Info className="w-4 h-4 text-brand-600 shrink-0 mt-0.5" />
               <span>
                 These are starting estimates, not medical prescriptions. Your actual needs can vary, and your targets may be adjusted as your progress changes.
@@ -383,7 +383,7 @@ export default function NutritionPlan() {
 
         {/* 5. YOUR PROFILE SUMMARY */}
         {profile && (
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-warmBg-border shadow-soft-sm space-y-6">
+          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-6">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="font-display text-lg font-extrabold text-charcoal-900">
