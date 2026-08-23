@@ -565,18 +565,16 @@ export default function FoodForm({ initialValues, onSubmit, isSubmitting, title 
                 <label
                   key={id}
                   onClick={() => toggleAllergen(id)}
-                  className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center gap-2 cursor-pointer transition-all ${
-                    isSelected
+                  className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center gap-2 cursor-pointer transition-all ${isSelected
                       ? 'bg-brand-50 border-brand-300 text-brand-800'
                       : 'bg-warmBg border-warmBg-border text-charcoal-700 hover:border-charcoal-300'
-                  }`}
+                    }`}
                 >
                   <div
-                    className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-                      isSelected
+                    className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${isSelected
                         ? 'bg-brand-600 border-brand-600 text-white'
                         : 'border-charcoal-300 bg-white'
-                    }`}
+                      }`}
                   >
                     {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                   </div>
@@ -633,11 +631,10 @@ export default function FoodForm({ initialValues, onSubmit, isSubmitting, title 
                     key={tag}
                     type="button"
                     onClick={() => toggleTag(tag)}
-                    className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                      isSelected
+                    className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${isSelected
                         ? 'bg-brand-600 text-white'
                         : 'bg-warmBg text-charcoal-700 border border-warmBg-border hover:bg-warmBg-muted'
-                    }`}
+                      }`}
                   >
                     {isSelected ? '✓ ' : '+ '}#{tag}
                   </button>
@@ -673,7 +670,7 @@ export default function FoodForm({ initialValues, onSubmit, isSubmitting, title 
               6. Food Image (AWS S3)
             </h2>
             <p className="text-[11px] text-charcoal-500 font-medium">
-              Upload dish image directly to AWS S3 storage. Manual S3 URL entry is disabled.
+              Upload dish image directly to AWS S3 storage.
             </p>
           </div>
 
@@ -714,11 +711,10 @@ export default function FoodForm({ initialValues, onSubmit, isSubmitting, title 
               {/* Status Message */}
               {imageStatusMsg && (
                 <div
-                  className={`text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-2 ${
-                    imageStatusMsg.includes('failed') || imageStatusMsg.includes('Error')
+                  className={`text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-2 ${imageStatusMsg.includes('failed') || imageStatusMsg.includes('Error')
                       ? 'bg-rose-50 text-rose-700 border border-rose-200'
                       : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                  }`}
+                    }`}
                 >
                   {imageStatusMsg}
                 </div>
