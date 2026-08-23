@@ -1,6 +1,7 @@
 import express from 'express';
 import authMiddleware from '../middleware/authMiddleware.js';
 import { adminOnly } from '../middleware/adminMiddleware.js';
+import { handleSingleImageUpload } from '../middleware/uploadMiddleware.js';
 import {
   getFoods,
   getFoodById,
@@ -8,6 +9,8 @@ import {
   updateFood,
   updateFoodStatus,
   deleteFood,
+  uploadFoodImage,
+  removeFoodImage,
 } from '../controllers/adminFoodController.js';
 
 const router = express.Router();
@@ -22,5 +25,9 @@ router.post('/', createFood);
 router.put('/:id', updateFood);
 router.patch('/:id/status', updateFoodStatus);
 router.delete('/:id', deleteFood);
+
+// Image upload and removal endpoints
+router.post('/:id/image', handleSingleImageUpload('image'), uploadFoodImage);
+router.delete('/:id/image', removeFoodImage);
 
 export default router;

@@ -9,7 +9,9 @@ import {
   Utensils,
   Image as ImageIcon,
   ArrowLeft,
+  Upload,
 } from 'lucide-react';
+import { uploadAdminFoodImage, deleteAdminFoodImage } from '../../services/foodService';
 
 const PREDEFINED_UNITS = [
   'piece',
@@ -84,6 +86,13 @@ export default function FoodForm({ initialValues, onSubmit, isSubmitting, title 
   const [customTag, setCustomTag] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
+  // Image Upload State
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState('');
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isRemovingImage, setIsRemovingImage] = useState(false);
+  const [imageStatusMsg, setImageStatusMsg] = useState('');
+
   // Populate form if editing existing item
   useEffect(() => {
     if (initialValues) {
@@ -117,6 +126,10 @@ export default function FoodForm({ initialValues, onSubmit, isSubmitting, title 
         },
         isActive: initialValues.isActive !== undefined ? initialValues.isActive : true,
       });
+
+      if (initialValues.image?.url) {
+        setPreviewUrl(initialValues.image.url);
+      }
     }
   }, [initialValues]);
 
@@ -203,6 +216,77 @@ export default function FoodForm({ initialValues, onSubmit, isSubmitting, title 
     }));
   };
 
+  // Image Selection Handler
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      setImageStatusMsg('Error: Selected image exceeds 5 MB limit.');
+      return;
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      setImageStatusMsg('Error: Only JPEG, PNG, and WebP images are allowed.');
+      return;
+    }
+
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+    setImageStatusMsg(
+      initialValues?._id
+        ? 'Local image selected. Click "Upload Image" to upload to AWS S3.'
+        : 'Local image selected. It will be uploaded automatically when saving.'
+    );
+  };
+
+  // Upload Image directly (for existing food)
+  const handleUploadImage = async () => {
+    if (!selectedFile) return;
+    if (!initialValues?._id) return;
+
+    setIsUploadingImage(true);
+    setImageStatusMsg('Uploading image to AWS S3...');
+    try {
+      const res = await uploadAdminFoodImage(initialValues._id, selectedFile);
+      if (res.food?.image) {
+        setFormData((prev) => ({ ...prev, image: res.food.image }));
+        setPreviewUrl(res.food.image.url);
+        setSelectedFile(null);
+        setImageStatusMsg('Image uploaded successfully.');
+      }
+    } catch (err) {
+      setImageStatusMsg(err.message || 'Image upload failed. Please try again.');
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
+  // Remove Image Handler
+  const handleRemoveImage = async () => {
+    setImageStatusMsg('');
+    if (initialValues?._id && (formData.image.key || formData.image.url)) {
+      setIsRemovingImage(true);
+      try {
+        await deleteAdminFoodImage(initialValues._id);
+        setFormData((prev) => ({ ...prev, image: { url: '', key: '' } }));
+        setPreviewUrl('');
+        setSelectedFile(null);
+        setImageStatusMsg('Image removed successfully.');
+      } catch (err) {
+        setImageStatusMsg(err.message || 'Failed to remove image.');
+      } finally {
+        setIsRemovingImage(false);
+      }
+    } else {
+      setFormData((prev) => ({ ...prev, image: { url: '', key: '' } }));
+      setPreviewUrl('');
+      setSelectedFile(null);
+      setImageStatusMsg('Image removed.');
+    }
+  };
+
   // Validation & Submit Handler
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -239,7 +323,7 @@ export default function FoodForm({ initialValues, onSubmit, isSubmitting, title 
       }
     }
 
-    onSubmit(formData);
+    onSubmit(formData, selectedFile);
   };
 
   return (
@@ -259,7 +343,7 @@ export default function FoodForm({ initialValues, onSubmit, isSubmitting, title 
               {title}
             </h1>
             <p className="text-xs text-charcoal-500 font-medium">
-              Manage Indian food dish metadata, nutrition per 100g, servings, and tags.
+              Manage Indian food dish metadata, nutrition per 100g, servings, and S3 images.
             </p>
           </div>
         </div>
@@ -581,53 +665,106 @@ export default function FoodForm({ initialValues, onSubmit, isSubmitting, title 
           </div>
         </div>
 
-        {/* SECTION 6: IMAGE & SOURCE */}
+        {/* SECTION 6: FOOD IMAGE (AWS S3) */}
         <div className="bg-white p-6 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-4">
           <div>
             <h2 className="text-sm font-extrabold text-charcoal-900 uppercase tracking-wider flex items-center gap-2">
               <ImageIcon className="w-4 h-4 text-brand-600" />
-              6. Image & Source Metadata
+              6. Food Image (AWS S3)
             </h2>
             <p className="text-[11px] text-charcoal-500 font-medium">
-              AWS S3 storage integration will be configured in an upcoming phase.
+              Upload dish image directly to AWS S3 storage. Manual S3 URL entry is disabled.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-charcoal-700 mb-1">
-                Image URL (S3 / CDN)
-              </label>
-              <input
-                type="text"
-                placeholder="https://..."
-                value={formData.image.url}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    image: { ...prev.image, url: e.target.value },
-                  }))
-                }
-                className="w-full px-3.5 py-2.5 rounded-xl border border-warmBg-border text-xs font-medium text-charcoal-900 focus:outline-none focus:border-brand-500"
-              />
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-6 p-4 rounded-xl bg-warmBg border border-warmBg-border">
+            {/* Image Preview */}
+            <div className="w-36 h-36 rounded-2xl border-2 border-dashed border-warmBg-border bg-white flex flex-col items-center justify-center overflow-hidden shrink-0 relative">
+              {previewUrl || formData.image.url ? (
+                <img
+                  src={previewUrl || formData.image.url}
+                  alt={formData.name || 'Food preview'}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="text-center p-3 text-charcoal-400 flex flex-col items-center gap-1">
+                  <ImageIcon className="w-8 h-8 stroke-1" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider">No Image</span>
+                </div>
+              )}
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-charcoal-700 mb-1">
-                Image Storage Key
-              </label>
-              <input
-                type="text"
-                placeholder="foods/naan.webp"
-                value={formData.image.key}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    image: { ...prev.image, key: e.target.value },
-                  }))
-                }
-                className="w-full px-3.5 py-2.5 rounded-xl border border-warmBg-border text-xs font-medium text-charcoal-900 focus:outline-none focus:border-brand-500"
-              />
+            {/* Upload Controls */}
+            <div className="flex-1 space-y-3">
+              <div>
+                <label className="block text-xs font-bold text-charcoal-700 mb-1">
+                  Select Food Image File
+                </label>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleFileSelect}
+                  className="block w-full text-xs text-charcoal-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 cursor-pointer"
+                />
+                <p className="text-[10px] text-charcoal-500 mt-1">
+                  Allowed formats: JPEG, PNG, WebP (Max size: 5 MB)
+                </p>
+              </div>
+
+              {/* Status Message */}
+              {imageStatusMsg && (
+                <div
+                  className={`text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-2 ${
+                    imageStatusMsg.includes('failed') || imageStatusMsg.includes('Error')
+                      ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                      : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                  }`}
+                >
+                  {imageStatusMsg}
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap items-center gap-3 pt-1">
+                {initialValues?._id && selectedFile && (
+                  <button
+                    type="button"
+                    onClick={handleUploadImage}
+                    disabled={isUploadingImage}
+                    className="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold hover:bg-brand-700 transition-colors shadow-soft-sm disabled:opacity-50 flex items-center gap-1.5"
+                  >
+                    {isUploadingImage ? (
+                      <>
+                        <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span>Uploading...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>Upload Image</span>
+                      </>
+                    )}
+                  </button>
+                )}
+
+                {(formData.image.url || formData.image.key || previewUrl) && (
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    disabled={isRemovingImage}
+                    className="px-4 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-bold transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                  >
+                    {isRemovingImage ? (
+                      <span>Removing...</span>
+                    ) : (
+                      <>
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Remove Image</span>
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 

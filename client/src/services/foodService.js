@@ -117,3 +117,42 @@ export const deleteAdminFood = async (id) => {
   }
   return data;
 };
+
+/**
+ * Upload an image file for a food item to AWS S3.
+ */
+export const uploadAdminFoodImage = async (id, file) => {
+  const token = localStorage.getItem('token');
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const response = await fetch(`${APP_CONFIG.apiBaseUrl}/admin/foods/${id}/image`, {
+    method: 'POST',
+    headers: {
+      Authorization: token ? `Bearer ${token}` : '',
+    },
+    body: formData,
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to upload food image');
+  }
+  return data;
+};
+
+/**
+ * Delete image for a food item from AWS S3.
+ */
+export const deleteAdminFoodImage = async (id) => {
+  const response = await fetch(`${APP_CONFIG.apiBaseUrl}/admin/foods/${id}/image`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to remove food image');
+  }
+  return data;
+};

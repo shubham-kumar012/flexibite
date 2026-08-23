@@ -1,5 +1,6 @@
 import Food from '../models/Food.js';
 import { createSlug } from '../utils/foodHelpers.js';
+import { uploadImageToS3, deleteImageFromS3 } from '../services/s3Service.js';
 
 /**
  * @route   GET /api/admin/foods
@@ -294,3 +295,109 @@ export const deleteFood = async (req, res) => {
     });
   }
 };
+
+/**
+ * @route   POST /api/admin/foods/:id/image
+ * @desc    Upload food dish image to AWS S3 & update MongoDB
+ * @access  Private (Admin Only)
+ */
+export const uploadFoodImage = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'No image file provided',
+      });
+    }
+
+    const food = await Food.findById(req.params.id);
+    if (!food) {
+      return res.status(404).json({
+        success: false,
+        message: 'Food item not found',
+      });
+    }
+
+    // Determine extension from mime type
+    let ext = 'webp';
+    if (req.file.mimetype === 'image/jpeg') ext = 'jpg';
+    else if (req.file.mimetype === 'image/png') ext = 'png';
+
+    const s3Key = `foods/${food.slug}.${ext}`;
+    const oldKey = food.image?.key || '';
+
+    // 1. Upload new image to S3
+    const uploadResult = await uploadImageToS3({
+      buffer: req.file.buffer,
+      key: s3Key,
+      contentType: req.file.mimetype,
+    });
+
+    // 2. Add timestamp query param to URL for cache-busting when replacing image
+    const cacheBustedUrl = `${uploadResult.url}?v=${Date.now()}`;
+
+    // 3. Update MongoDB document
+    food.image = {
+      url: cacheBustedUrl,
+      key: uploadResult.key,
+    };
+    await food.save();
+
+    // 4. Delete old S3 object if it was a different key
+    if (oldKey && oldKey !== uploadResult.key) {
+      await deleteImageFromS3(oldKey);
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Food image uploaded successfully',
+      food,
+    });
+  } catch (error) {
+    console.error('Error uploading food image:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to upload food image',
+    });
+  }
+};
+
+/**
+ * @route   DELETE /api/admin/foods/:id/image
+ * @desc    Remove food image from S3 & clear image fields in MongoDB
+ * @access  Private (Admin Only)
+ */
+export const removeFoodImage = async (req, res) => {
+  try {
+    const food = await Food.findById(req.params.id);
+    if (!food) {
+      return res.status(404).json({
+        success: false,
+        message: 'Food item not found',
+      });
+    }
+
+    if (food.image && food.image.key) {
+      await deleteImageFromS3(food.image.key);
+    }
+
+    food.image = {
+      url: '',
+      key: '',
+    };
+    await food.save();
+
+    return res.status(200).json({
+      success: true,
+      message: 'Food image removed successfully',
+      food,
+    });
+  } catch (error) {
+    console.error('Error removing food image:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to remove food image',
+    });
+  }
+};
+

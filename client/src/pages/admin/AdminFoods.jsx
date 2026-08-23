@@ -173,10 +173,21 @@ export default function AdminFoods() {
                   {foods.map((food) => (
                     <tr key={food._id} className="hover:bg-warmBg/50 transition-colors">
                       <td className="py-3 px-4 font-bold text-charcoal-900">
-                        {food.name}
-                        <span className="block text-[10px] font-normal text-charcoal-400">
-                          {food.slug}
-                        </span>
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl border border-warmBg-border bg-warmBg overflow-hidden shrink-0 flex items-center justify-center">
+                            {food.image?.url ? (
+                              <img src={food.image.url} alt={food.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <Apple className="w-4 h-4 text-charcoal-400" />
+                            )}
+                          </div>
+                          <div>
+                            <span>{food.name}</span>
+                            <span className="block text-[10px] font-normal text-charcoal-400">
+                              {food.slug}
+                            </span>
+                          </div>
+                        </div>
                       </td>
 
                       <td className="py-3 px-4 text-charcoal-700 font-medium">

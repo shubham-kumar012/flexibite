@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AppLayout from '../../components/AppLayout';
 import FoodForm from '../../components/admin/FoodForm';
-import { getAdminFoodById, updateAdminFood } from '../../services/foodService';
+import { getAdminFoodById, updateAdminFood, uploadAdminFoodImage } from '../../services/foodService';
 import { AlertCircle } from 'lucide-react';
 
 export default function EditFood() {
@@ -31,10 +31,13 @@ export default function EditFood() {
     fetchFoodDetails();
   }, [id]);
 
-  const handleSubmit = async (foodData) => {
+  const handleSubmit = async (foodData, imageFile) => {
     setIsSubmitting(true);
     try {
       await updateAdminFood(id, foodData);
+      if (imageFile) {
+        await uploadAdminFoodImage(id, imageFile);
+      }
       navigate('/admin/foods');
     } catch (err) {
       alert(err.message || 'Failed to update food item.');
