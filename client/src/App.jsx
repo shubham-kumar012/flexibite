@@ -7,6 +7,8 @@ import Profile from './pages/Profile';
 import Onboarding from './pages/Onboarding';
 import Dashboard from './pages/Dashboard';
 import NutritionPlan from './pages/NutritionPlan';
+import Foods from './pages/Foods';
+import FoodDetails from './pages/FoodDetails';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import AdminFoods from './pages/admin/AdminFoods';
@@ -34,6 +36,22 @@ export default function App() {
           element={
             <ProtectedRoute>
               <NutritionPlan />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/foods"
+          element={
+            <ProtectedRoute>
+              <Foods />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/foods/:id"
+          element={
+            <ProtectedRoute>
+              <FoodDetails />
             </ProtectedRoute>
           }
         />

@@ -62,10 +62,9 @@ export default function AppLayout({ children }) {
     },
     {
       label: 'Foods',
-      path: '#',
+      path: '/foods',
       icon: Apple,
-      active: false,
-      badge: 'Soon',
+      active: true,
     },
     {
       label: 'Goals',

@@ -156,3 +156,70 @@ export const deleteAdminFoodImage = async (id) => {
   }
   return data;
 };
+
+/* ==========================================================================
+   PUBLIC / USER FOOD DISCOVERY API SERVICES
+   ========================================================================== */
+
+/**
+ * Fetch paginated, searchable, and filtered active food list for normal users.
+ */
+export const getPublicFoods = async ({
+  page = 1,
+  limit = 20,
+  search = '',
+  category = '',
+  dietaryType = '',
+} = {}) => {
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+  });
+
+  if (search) queryParams.append('search', search);
+  if (category) queryParams.append('category', category);
+  if (dietaryType) queryParams.append('dietaryType', dietaryType);
+
+  const response = await fetch(`${APP_CONFIG.apiBaseUrl}/foods?${queryParams.toString()}`, {
+    method: 'GET',
+    headers: getAuthHeaders(),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to fetch foods');
+  }
+  return data;
+};
+
+/**
+ * Fetch distinct active categories for normal users.
+ */
+export const getPublicCategories = async () => {
+  const response = await fetch(`${APP_CONFIG.apiBaseUrl}/foods/categories`, {
+    method: 'GET',
+    headers: getAuthHeaders(),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to fetch categories');
+  }
+  return data;
+};
+
+/**
+ * Fetch details for a single food item by ID for normal users.
+ */
+export const getPublicFoodById = async (id) => {
+  const response = await fetch(`${APP_CONFIG.apiBaseUrl}/foods/${id}`, {
+    method: 'GET',
+    headers: getAuthHeaders(),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to fetch food details');
+  }
+  return data;
+};
