@@ -7,14 +7,10 @@ import {
   ClipboardList,
   Utensils,
   Apple,
-  Target,
-  TrendingUp,
   User as UserIcon,
-  Settings,
   LogOut,
   Menu,
   X,
-  Sparkles,
   ShieldCheck,
 } from 'lucide-react';
 
@@ -35,13 +31,11 @@ export default function AppLayout({ children }) {
       label: 'Dashboard',
       path: '/dashboard',
       icon: LayoutDashboard,
-      active: true,
     },
     {
       label: 'Nutrition Plan',
       path: '/nutrition-plan',
       icon: ClipboardList,
-      active: true,
     },
     ...(user?.role === 'admin'
       ? [
@@ -49,7 +43,6 @@ export default function AppLayout({ children }) {
             label: 'Admin Foods',
             path: '/admin/foods',
             icon: ShieldCheck,
-            active: true,
           },
         ]
       : []),
@@ -57,40 +50,16 @@ export default function AppLayout({ children }) {
       label: "Today's Diet",
       path: '/todays-diet',
       icon: Utensils,
-      active: true,
     },
     {
       label: 'Foods',
       path: '/foods',
       icon: Apple,
-      active: true,
-    },
-    {
-      label: 'Goals',
-      path: '#',
-      icon: Target,
-      active: false,
-      badge: 'Soon',
-    },
-    {
-      label: 'Progress',
-      path: '#',
-      icon: TrendingUp,
-      active: false,
-      badge: 'Soon',
     },
     {
       label: 'Profile',
       path: '/profile',
       icon: UserIcon,
-      active: true,
-    },
-    {
-      label: 'Settings',
-      path: '#',
-      icon: Settings,
-      active: false,
-      badge: 'Soon',
     },
   ];
 
@@ -124,41 +93,21 @@ export default function AppLayout({ children }) {
               const Icon = item.icon;
               const isCurrent = location.pathname === item.path;
 
-              if (item.active) {
-                return (
-                  <Link
-                    key={item.label}
-                    to={item.path}
-                    className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
-                      isCurrent
-                        ? 'bg-brand-50 text-brand-700 border border-brand-200/80 shadow-soft-sm'
-                        : 'text-charcoal-700 hover:bg-warmBg hover:text-brand-600'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <Icon className={`w-4 h-4 ${isCurrent ? 'text-brand-600' : 'text-charcoal-500'}`} />
-                      <span>{item.label}</span>
-                    </div>
-                  </Link>
-                );
-              }
-
               return (
-                <div
+                <Link
                   key={item.label}
-                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium text-charcoal-400 cursor-not-allowed opacity-70 select-none"
-                  title="Feature coming soon"
+                  to={item.path}
+                  className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                    isCurrent
+                      ? 'bg-brand-50 text-brand-700 border border-brand-200/80 shadow-soft-sm'
+                      : 'text-charcoal-700 hover:bg-warmBg hover:text-brand-600'
+                  }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <Icon className="w-4 h-4 text-charcoal-300" />
+                    <Icon className={`w-4 h-4 ${isCurrent ? 'text-brand-600' : 'text-charcoal-500'}`} />
                     <span>{item.label}</span>
                   </div>
-                  {item.badge && (
-                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-warmBg-muted text-charcoal-500 border border-warmBg-border">
-                      {item.badge}
-                    </span>
-                  )}
-                </div>
+                </Link>
               );
             })}
           </nav>
@@ -215,41 +164,22 @@ export default function AppLayout({ children }) {
                 const Icon = item.icon;
                 const isCurrent = location.pathname === item.path;
 
-                if (item.active) {
-                  return (
-                    <Link
-                      key={item.label}
-                      to={item.path}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
-                        isCurrent
-                          ? 'bg-brand-50 text-brand-700 border border-brand-200'
-                          : 'text-charcoal-800 hover:bg-warmBg'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Icon className={`w-4 h-4 ${isCurrent ? 'text-brand-600' : 'text-charcoal-500'}`} />
-                        <span>{item.label}</span>
-                      </div>
-                    </Link>
-                  );
-                }
-
                 return (
-                  <div
+                  <Link
                     key={item.label}
-                    className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium text-charcoal-400 opacity-60 cursor-not-allowed"
+                    to={item.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                      isCurrent
+                        ? 'bg-brand-50 text-brand-700 border border-brand-200'
+                        : 'text-charcoal-800 hover:bg-warmBg'
+                    }`}
                   >
                     <div className="flex items-center gap-3">
-                      <Icon className="w-4 h-4 text-charcoal-300" />
+                      <Icon className={`w-4 h-4 ${isCurrent ? 'text-brand-600' : 'text-charcoal-500'}`} />
                       <span>{item.label}</span>
                     </div>
-                    {item.badge && (
-                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-warmBg-muted text-charcoal-500 border border-warmBg-border">
-                        {item.badge}
-                      </span>
-                    )}
-                  </div>
+                  </Link>
                 );
               })}
             </nav>
