@@ -273,5 +273,5 @@ Building FlexiBite provided practical experience in:
 
 - **Live Application**: [https://flexibite.vercel.app](https://flexibite.vercel.app)
 - **GitHub**: [github.com/shubham-kumar012](https://github.com/shubham-kumar012)
-- **Portfolio**: 
+- **Portfolio**: [https://itshubham.me](https://itshubham.me)
 
