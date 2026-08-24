@@ -19,9 +19,30 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
+    // Password is required only for local email/password authentication
     password: {
       type: String,
-      required: [true, 'Password is required'],
+      required: [
+        function () {
+          return this.authProvider === 'local';
+        },
+        'Password is required for local accounts',
+      ],
+    },
+    // Google OAuth fields
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true, // Allows multiple local users to have null googleId without index collisions
+    },
+    authProvider: {
+      type: String,
+      enum: ['local', 'google'],
+      default: 'local',
+    },
+    profileImage: {
+      type: String,
+      default: '',
     },
     role: {
       type: String,
