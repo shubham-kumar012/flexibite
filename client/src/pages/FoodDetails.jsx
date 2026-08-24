@@ -25,6 +25,8 @@ const DIETARY_CONFIG = {
   unknown: { label: 'General', bg: 'bg-gray-50 text-gray-600 border-gray-200', icon: Utensils },
 };
 
+import ServingModal from '../components/foods/ServingModal';
+
 export default function FoodDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -33,6 +35,7 @@ export default function FoodDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [imageError, setImageError] = useState(false);
+  const [servingModalOpen, setServingModalOpen] = useState(false);
 
   // Selected serving state (default to first serving or 100g default)
   const [selectedServing, setSelectedServing] = useState(null);
@@ -198,22 +201,16 @@ export default function FoodDetails() {
               <span className="text-xs font-bold text-charcoal-400">per 100g</span>
             </div>
 
-            {/* Placeholder Add to Today's Diet button (Disabled as per spec) */}
+            {/* Add to Today's Diet button */}
             <div className="space-y-2">
               <button
-                disabled
-                className="w-full py-3.5 px-4 rounded-2xl font-bold text-xs bg-charcoal-100 text-charcoal-400 border border-charcoal-200 cursor-not-allowed flex items-center justify-center gap-2 opacity-80"
-                title="Food logging feature coming in Phase 5.2"
+                type="button"
+                onClick={() => setServingModalOpen(true)}
+                className="w-full py-3.5 px-4 rounded-2xl font-bold text-xs bg-brand-600 hover:bg-brand-700 text-white border border-brand-700 transition-all flex items-center justify-center gap-2 shadow-soft hover:shadow-floating"
               >
                 <PlusCircle className="w-4 h-4" />
                 <span>Add to Today's Diet</span>
-                <span className="text-[10px] bg-charcoal-200 text-charcoal-700 px-2 py-0.5 rounded-full font-bold uppercase ml-1">
-                  Coming Soon
-                </span>
               </button>
-              <p className="text-[11px] text-center text-charcoal-400 font-medium">
-                Meal tracking and logging will be available in the next phase.
-              </p>
             </div>
           </div>
         </div>
@@ -421,6 +418,13 @@ export default function FoodDetails() {
             )}
           </div>
         </div>
+
+        {/* Serving Selection & Macros Modal */}
+        <ServingModal
+          food={food}
+          isOpen={servingModalOpen}
+          onClose={() => setServingModalOpen(false)}
+        />
       </div>
     </AppLayout>
   );

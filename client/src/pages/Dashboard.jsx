@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { APP_CONFIG } from '../config/appConfig';
 import AppLayout from '../components/AppLayout';
+import { getTodayDiet } from '../services/dietService';
 import {
   formatGoal,
   formatActivityLevel,
@@ -15,13 +16,11 @@ import {
   Target,
   Utensils,
   Sparkles,
-  RefreshCw,
   AlertCircle,
-  CheckCircle2,
   Apple,
   Edit3,
-  Calendar,
-  Lock,
+  ChevronRight,
+  PlusCircle,
 } from 'lucide-react';
 
 export default function Dashboard() {
@@ -30,9 +29,10 @@ export default function Dashboard() {
 
   const [profile, setProfile] = useState(null);
   const [nutritionTarget, setNutritionTarget] = useState(null);
+  const [todayTotals, setTodayTotals] = useState({ calories: 0, protein: 0, carbohydrates: 0, fats: 0, fibre: 0 });
+  const [todayEntriesCount, setTodayEntriesCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
 
   // Greeting helper based on local time
   const getGreeting = () => {
@@ -96,6 +96,17 @@ export default function Dashboard() {
       } else {
         setError(targetData.message || 'Unable to load nutrition targets.');
       }
+
+      // 3. Fetch Today's Diet totals and entries count
+      try {
+        const dietData = await getTodayDiet();
+        if (dietData.success) {
+          setTodayTotals(dietData.totals || { calories: 0, protein: 0, carbohydrates: 0, fats: 0, fibre: 0 });
+          setTodayEntriesCount((dietData.entries || []).length);
+        }
+      } catch (dietErr) {
+        console.error('Error fetching today\'s diet totals for dashboard:', dietErr);
+      }
     } catch (err) {
       console.error('Error loading dashboard data:', err);
       setError('Network error loading dashboard data.');
@@ -119,6 +130,21 @@ export default function Dashboard() {
     );
   }
 
+  // Calculate remaining calories cleanly
+  const targetCalories = nutritionTarget?.calories || 2000;
+  const consumedCalories = todayTotals.calories || 0;
+  const remainingCalories = targetCalories - consumedCalories;
+
+  // Macro target values
+  const targetProtein = nutritionTarget?.protein || 75;
+  const targetCarbs = nutritionTarget?.carbohydrates || 225;
+  const targetFat = nutritionTarget?.fat || 50;
+
+  // Percentage calculations clamped to max 100% for progress bars
+  const proteinPercent = Math.min(100, Math.round(((todayTotals.protein || 0) / targetProtein) * 100));
+  const carbsPercent = Math.min(100, Math.round(((todayTotals.carbohydrates || 0) / targetCarbs) * 100));
+  const fatPercent = Math.min(100, Math.round(((todayTotals.fats || 0) / targetFat) * 100));
+
   return (
     <AppLayout>
       <div className="space-y-8 max-w-5xl mx-auto">
@@ -134,11 +160,11 @@ export default function Dashboard() {
           </div>
 
           <Link
-            to="/nutrition-plan"
+            to="/todays-diet"
             className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-xs font-bold text-white shadow-soft hover:shadow-floating transition-all shrink-0"
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>View Nutrition Plan</span>
+            <Utensils className="w-3.5 h-3.5" />
+            <span>Today's Diet</span>
           </Link>
         </div>
 
@@ -153,7 +179,7 @@ export default function Dashboard() {
         {/* 1. DAILY TARGET CARD */}
         {nutritionTarget && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Today's Calorie Target */}
+            {/* Today's Calorie Target & Intake Summary */}
             <div className="bg-white p-6 sm:p-8 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-4 flex flex-col justify-between">
               <div>
                 <span className="text-xs font-extrabold uppercase tracking-wider text-brand-700 bg-brand-50 px-2.5 py-1 rounded-full border border-brand-200/60 inline-block mb-3">
@@ -170,13 +196,20 @@ export default function Dashboard() {
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-warmBg-border">
+              <div className="pt-4 border-t border-warmBg-border space-y-1">
                 <span className="block text-[11px] font-bold uppercase tracking-wider text-charcoal-400">
                   Today's Intake
                 </span>
-                <span className="text-sm font-semibold text-charcoal-700 mt-0.5 block">
-                  No meals logged yet
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-extrabold text-charcoal-900">
+                    {consumedCalories} kcal consumed
+                  </span>
+                  <span className={`text-xs font-bold ${remainingCalories >= 0 ? 'text-emerald-700' : 'text-rose-600'}`}>
+                    {remainingCalories >= 0
+                      ? `${remainingCalories} kcal remaining`
+                      : `${Math.abs(remainingCalories)} kcal over target`}
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -224,51 +257,75 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* 2. MACRO TARGETS (3 Cards, no fake progress) */}
+        {/* 2. MACRO TARGETS WITH REAL PROGRESS */}
         {nutritionTarget && (
           <div className="space-y-3">
-            <h2 className="text-xs font-extrabold uppercase tracking-wider text-charcoal-800 flex items-center gap-1.5">
-              <Apple className="w-4 h-4 text-brand-600" />
-              <span>Daily Macro Targets</span>
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-xs font-extrabold uppercase tracking-wider text-charcoal-800 flex items-center gap-1.5">
+                <Apple className="w-4 h-4 text-brand-600" />
+                <span>Daily Macro Targets</span>
+              </h2>
+              <Link
+                to="/todays-diet"
+                className="text-xs font-bold text-brand-700 hover:text-brand-900 hover:underline flex items-center gap-1"
+              >
+                <span>View Full Log</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {/* Protein Target */}
-              <div className="bg-white p-5 rounded-xl border border-warmBg-border shadow-soft-sm space-y-2">
-                <span className="text-xs font-extrabold text-indigo-900 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200/60 inline-block">
-                  Protein
-                </span>
-                <div>
-                  <div className="text-2xl font-black font-display text-charcoal-900">
-                    {nutritionTarget.protein} g
-                  </div>
-                  <p className="text-xs text-charcoal-500 font-medium mt-0.5">Daily target</p>
+              <div className="bg-white p-5 rounded-xl border border-warmBg-border shadow-soft-sm space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-extrabold text-indigo-900 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200/60">
+                    Protein
+                  </span>
+                  <span className="text-xs font-bold text-charcoal-700">
+                    {todayTotals.protein} / {targetProtein} g
+                  </span>
+                </div>
+                <div className="w-full bg-warmBg rounded-full h-2 overflow-hidden border border-warmBg-border">
+                  <div
+                    className="bg-brand-600 h-full rounded-full transition-all duration-500"
+                    style={{ width: `${proteinPercent}%` }}
+                  />
                 </div>
               </div>
 
               {/* Carbohydrates Target */}
-              <div className="bg-white p-5 rounded-xl border border-warmBg-border shadow-soft-sm space-y-2">
-                <span className="text-xs font-extrabold text-emerald-900 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200/60 inline-block">
-                  Carbs
-                </span>
-                <div>
-                  <div className="text-2xl font-black font-display text-charcoal-900">
-                    {nutritionTarget.carbohydrates} g
-                  </div>
-                  <p className="text-xs text-charcoal-500 font-medium mt-0.5">Daily target</p>
+              <div className="bg-white p-5 rounded-xl border border-warmBg-border shadow-soft-sm space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-extrabold text-emerald-900 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200/60">
+                    Carbs
+                  </span>
+                  <span className="text-xs font-bold text-charcoal-700">
+                    {todayTotals.carbohydrates} / {targetCarbs} g
+                  </span>
+                </div>
+                <div className="w-full bg-warmBg rounded-full h-2 overflow-hidden border border-warmBg-border">
+                  <div
+                    className="bg-amber-500 h-full rounded-full transition-all duration-500"
+                    style={{ width: `${carbsPercent}%` }}
+                  />
                 </div>
               </div>
 
               {/* Fat Target */}
-              <div className="bg-white p-5 rounded-xl border border-warmBg-border shadow-soft-sm space-y-2">
-                <span className="text-xs font-extrabold text-amber-900 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200/60 inline-block">
-                  Fat
-                </span>
-                <div>
-                  <div className="text-2xl font-black font-display text-charcoal-900">
-                    {nutritionTarget.fat} g
-                  </div>
-                  <p className="text-xs text-charcoal-500 font-medium mt-0.5">Daily target</p>
+              <div className="bg-white p-5 rounded-xl border border-warmBg-border shadow-soft-sm space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-extrabold text-amber-900 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200/60">
+                    Fat
+                  </span>
+                  <span className="text-xs font-bold text-charcoal-700">
+                    {todayTotals.fats} / {targetFat} g
+                  </span>
+                </div>
+                <div className="w-full bg-warmBg rounded-full h-2 overflow-hidden border border-warmBg-border">
+                  <div
+                    className="bg-rose-500 h-full rounded-full transition-all duration-500"
+                    style={{ width: `${fatPercent}%` }}
+                  />
                 </div>
               </div>
             </div>
@@ -317,31 +374,47 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* 4. FOOD TRACKING EMPTY STATE */}
+        {/* 4. TODAY'S MEALS TRACKING SECTION */}
         <div className="bg-white p-6 sm:p-8 rounded-2xl border border-warmBg-border shadow-soft-sm space-y-4 text-center">
           <div className="max-w-md mx-auto space-y-2">
-            <div className="w-12 h-12 bg-warmBg rounded-xl flex items-center justify-center mx-auto text-charcoal-400 border border-warmBg-border">
+            <div className="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center mx-auto text-brand-700 border border-brand-200">
               <Utensils className="w-6 h-6" />
             </div>
             <h3 className="font-display font-extrabold text-lg text-charcoal-900">
               Today's Meals
             </h3>
-            <p className="text-xs font-bold text-charcoal-700">
-              You haven't added any meals yet.
-            </p>
-            <p className="text-xs text-charcoal-500 leading-relaxed font-medium">
-              Once food tracking is available, you'll be able to add your meals and see how they fit into your daily targets.
-            </p>
+            {todayEntriesCount === 0 ? (
+              <>
+                <p className="text-xs font-bold text-charcoal-700">
+                  You haven't logged any meals today.
+                </p>
+                <p className="text-xs text-charcoal-500 leading-relaxed font-medium">
+                  Search Indian foods and track your daily nutrition with familiar serving sizes.
+                </p>
+              </>
+            ) : (
+              <p className="text-xs font-bold text-charcoal-700">
+                You have logged {todayEntriesCount} dish(es) today ({consumedCalories} kcal).
+              </p>
+            )}
           </div>
 
-          <div className="pt-2">
-            <button
-              disabled
-              className="px-5 py-2.5 text-xs font-extrabold text-charcoal-400 bg-warmBg border border-warmBg-border rounded-xl cursor-not-allowed opacity-60 inline-flex items-center gap-2"
+          <div className="pt-2 flex items-center justify-center gap-3">
+            <Link
+              to="/foods"
+              className="px-5 py-2.5 text-xs font-extrabold text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-all shadow-soft inline-flex items-center gap-2"
             >
-              <Lock className="w-3.5 h-3.5" />
-              <span>Explore Foods (Coming Soon)</span>
-            </button>
+              <PlusCircle className="w-4 h-4" />
+              <span>Log Food</span>
+            </Link>
+
+            <Link
+              to="/todays-diet"
+              className="px-5 py-2.5 text-xs font-extrabold text-charcoal-800 bg-warmBg hover:bg-warmBg-muted border border-warmBg-border rounded-xl transition-colors inline-flex items-center gap-2"
+            >
+              <Utensils className="w-3.5 h-3.5 text-brand-600" />
+              <span>View Today's Diet</span>
+            </Link>
           </div>
         </div>
       </div>

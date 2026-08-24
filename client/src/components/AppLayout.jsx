@@ -55,10 +55,9 @@ export default function AppLayout({ children }) {
       : []),
     {
       label: "Today's Diet",
-      path: '#',
+      path: '/todays-diet',
       icon: Utensils,
-      active: false,
-      badge: 'Soon',
+      active: true,
     },
     {
       label: 'Foods',

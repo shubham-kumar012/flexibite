@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import NutritionPlan from './pages/NutritionPlan';
 import Foods from './pages/Foods';
 import FoodDetails from './pages/FoodDetails';
+import TodaysDiet from './pages/TodaysDiet';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import AdminFoods from './pages/admin/AdminFoods';
@@ -52,6 +53,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <FoodDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/todays-diet"
+          element={
+            <ProtectedRoute>
+              <TodaysDiet />
             </ProtectedRoute>
           }
         />

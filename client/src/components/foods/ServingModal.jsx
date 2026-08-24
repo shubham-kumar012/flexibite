@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { X, Scale, Flame, PlusCircle, Leaf, Egg, Utensils } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { X, Scale, Flame, PlusCircle, Leaf, Egg, Utensils, CheckCircle2, AlertCircle } from 'lucide-react';
+import { addDietEntry } from '../../services/dietService';
 
 const DIETARY_CONFIG = {
   vegan: { label: 'Vegan', bg: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: Leaf },
@@ -9,8 +11,19 @@ const DIETARY_CONFIG = {
   unknown: { label: 'General', bg: 'bg-gray-50 text-gray-600 border-gray-200', icon: Utensils },
 };
 
-export default function ServingModal({ food, isOpen, onClose }) {
+const MEAL_OPTIONS = [
+  { id: 'breakfast', label: 'Breakfast' },
+  { id: 'lunch', label: 'Lunch' },
+  { id: 'dinner', label: 'Dinner' },
+  { id: 'snack', label: 'Snacks' },
+];
+
+export default function ServingModal({ food, isOpen, onClose, initialMealType = 'lunch' }) {
   const [selectedServing, setSelectedServing] = useState(null);
+  const [mealType, setMealType] = useState('lunch');
+  const [submitting, setSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (food) {
@@ -19,8 +32,11 @@ export default function ServingModal({ food, isOpen, onClose }) {
       } else {
         setSelectedServing({ name: 'Standard Portion', unit: 'g', grams: 100 });
       }
+      setMealType(initialMealType || 'lunch');
+      setSuccessMessage('');
+      setErrorMessage('');
     }
-  }, [food]);
+  }, [food, initialMealType]);
 
   if (!isOpen || !food) return null;
 
@@ -43,8 +59,42 @@ export default function ServingModal({ food, isOpen, onClose }) {
     fibre: parseFloat(((nutrition100g.fibre || 0) * multiplier).toFixed(1)),
   };
 
-  return (
-    <div className="fixed inset-0 z-50 bg-charcoal-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-fadeIn">
+  const handleAddToDiet = async () => {
+    if (!selectedServing) return;
+    setSubmitting(true);
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    try {
+      const res = await addDietEntry({
+        foodId: food._id,
+        mealType,
+        serving: {
+          name: selectedServing.name,
+          grams: selectedServing.grams,
+        },
+      });
+
+      if (res.success) {
+        const capitalizedMeal = mealType.charAt(0).toUpperCase() + mealType.slice(1);
+        setSuccessMessage(`${food.name} added to ${capitalizedMeal}!`);
+        setTimeout(() => {
+          setSuccessMessage('');
+          onClose();
+        }, 1100);
+      } else {
+        setErrorMessage(res.message || 'Failed to add food');
+      }
+    } catch (err) {
+      setErrorMessage(err.message || 'Error adding food to diet');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // Render modal directly to document.body using React Portal for full screen backdrop coverage
+  return createPortal(
+    <div className="fixed inset-0 z-[100] bg-charcoal-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-fadeIn">
       <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-floating border border-warmBg-border space-y-5 relative my-8">
         {/* Close Button */}
         <button
@@ -86,6 +136,21 @@ export default function ServingModal({ food, isOpen, onClose }) {
           </div>
         </div>
 
+        {/* Success / Error Feedback Banners */}
+        {successMessage && (
+          <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs font-bold flex items-center gap-2 animate-fadeIn">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>{successMessage}</span>
+          </div>
+        )}
+
+        {errorMessage && (
+          <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs font-bold flex items-center gap-2 animate-fadeIn">
+            <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" />
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
         {/* Serving Selection */}
         <div className="space-y-3">
           <div className="flex items-center gap-2 text-xs font-bold text-charcoal-700">
@@ -93,7 +158,7 @@ export default function ServingModal({ food, isOpen, onClose }) {
             <span>Select Serving Size:</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto p-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto p-1">
             {servingsList.map((serving, idx) => {
               const isSelected = selectedServing?.name === serving.name && selectedServing?.grams === serving.grams;
               return (
@@ -122,6 +187,32 @@ export default function ServingModal({ food, isOpen, onClose }) {
                   >
                     {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                   </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Meal Type Selection */}
+        <div className="space-y-2">
+          <span className="text-xs font-extrabold text-charcoal-800 uppercase tracking-wider block">
+            Which meal?
+          </span>
+          <div className="grid grid-cols-4 gap-2">
+            {MEAL_OPTIONS.map((m) => {
+              const isSelected = mealType === m.id;
+              return (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => setMealType(m.id)}
+                  className={`py-2 px-2 rounded-xl text-xs font-bold border transition-all text-center ${
+                    isSelected
+                      ? 'bg-brand-600 text-white border-brand-600 shadow-soft-sm'
+                      : 'bg-warmBg text-charcoal-700 border-warmBg-border hover:bg-white'
+                  }`}
+                >
+                  {m.label}
                 </button>
               );
             })}
@@ -160,23 +251,20 @@ export default function ServingModal({ food, isOpen, onClose }) {
           </div>
         </div>
 
-        {/* Action Button (Placeholder disabled for Phase 5.1) */}
-        <div className="pt-2">
+        {/* Action Button: Add to Today's Diet */}
+        <div className="pt-1">
           <button
-            disabled
-            className="w-full py-3 px-4 rounded-xl font-bold text-xs bg-charcoal-100 text-charcoal-400 border border-charcoal-200 cursor-not-allowed flex items-center justify-center gap-2 opacity-80"
+            type="button"
+            onClick={handleAddToDiet}
+            disabled={submitting || Boolean(successMessage)}
+            className="w-full py-3.5 px-4 rounded-xl font-bold text-xs bg-brand-600 hover:bg-brand-700 text-white border border-brand-700 transition-colors flex items-center justify-center gap-2 shadow-soft disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <PlusCircle className="w-4 h-4" />
-            <span>Add to Today's Diet</span>
-            <span className="text-[10px] bg-charcoal-200 text-charcoal-700 px-2 py-0.5 rounded-full font-bold uppercase ml-1">
-              Coming Soon
-            </span>
+            <span>{submitting ? 'Adding to Diet...' : "Add to Today's Diet"}</span>
           </button>
-          <p className="text-[10px] text-center text-charcoal-400 font-medium mt-2">
-            Food logging will be fully functional in Phase 5.2.
-          </p>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
