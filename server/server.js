@@ -7,6 +7,7 @@ import profileRoutes from './routes/profileRoutes.js';
 import nutritionTargetRoutes from './routes/nutritionTargetRoutes.js';
 import adminFoodRoutes from './routes/adminFoodRoutes.js';
 import userFoodRoutes from './routes/userFoodRoutes.js';
+import dietRoutes from './routes/dietRoutes.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -45,6 +46,9 @@ app.use('/api/nutrition-targets', nutritionTargetRoutes);
 
 // User Food Discovery Routes
 app.use('/api/foods', userFoodRoutes);
+
+// Today's Diet & Food Logging Routes
+app.use('/api/diet', dietRoutes);
 
 // Admin Food Routes
 app.use('/api/admin/foods', adminFoodRoutes);
