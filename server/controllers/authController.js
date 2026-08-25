@@ -231,7 +231,7 @@ export const googleAuthCallback = async (req, res) => {
 
     // 5. Check onboarding completion status from user's Profile
     const profile = await Profile.findOne({ userId: user._id });
-    const isCompleted = Boolean(profile && profile.profileCompleted);
+    const isCompleted = Boolean(profile && (profile.onboardingCompleted || profile.profileCompleted));
 
     const redirectTo = isCompleted ? '/dashboard' : '/onboarding';
 
