@@ -18,7 +18,7 @@ const authMiddleware = (req, res, next) => {
     const token = authHeader.split(' ')[1];
 
     // 4. Verify token using JWT_SECRET
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret_key_1234');
 
     // 5. Attach decoded userId to request object for downstream controllers
     req.userId = decoded.userId;

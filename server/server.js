@@ -16,10 +16,12 @@ const app = express();
 const PORT = process.env.PORT || 5002;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
 
+app.set('trust proxy', 1);
+
 // Configure CORS middleware to allow requests from the React frontend
 app.use(
   cors({
-    origin: CLIENT_URL,
+    origin: [CLIENT_URL, /\.vercel\.app$/, 'http://localhost:3000', 'http://localhost:5173'],
     credentials: true,
   })
 );
