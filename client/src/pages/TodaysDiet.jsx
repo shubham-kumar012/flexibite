@@ -57,6 +57,7 @@ export default function TodaysDiet() {
         headers: {
           'Content-Type': 'application/json',
           Authorization: token ? `Bearer ${token}` : '',
+          'ngrok-skip-browser-warning': '1',
         },
       });
       const targetData = await targetRes.json();

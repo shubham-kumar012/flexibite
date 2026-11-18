@@ -42,6 +42,7 @@ export default function Login() {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${activeToken}`,
+          'ngrok-skip-browser-warning': '1',
         },
       });
 

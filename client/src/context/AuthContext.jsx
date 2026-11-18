@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${storedToken}`,
+            'ngrok-skip-browser-warning': '1',
           },
         });
 
@@ -57,6 +58,7 @@ export const AuthProvider = ({ children }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': '1',
         },
         body: JSON.stringify({ email, password }),
       });
@@ -86,6 +88,7 @@ export const AuthProvider = ({ children }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': '1',
         },
         body: JSON.stringify({ name, email, password }),
       });
@@ -116,6 +119,7 @@ export const AuthProvider = ({ children }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': '1',
         },
       });
     } catch (error) {

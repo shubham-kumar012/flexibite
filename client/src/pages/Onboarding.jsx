@@ -150,6 +150,7 @@ export default function Onboarding() {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
+            'ngrok-skip-browser-warning': '1',
           },
         });
 
@@ -350,6 +351,7 @@ export default function Onboarding() {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': '1',
         },
         body: JSON.stringify(payload),
       });
@@ -364,6 +366,7 @@ export default function Onboarding() {
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${token}`,
+              'ngrok-skip-browser-warning': '1',
             },
           });
         } catch (genErr) {

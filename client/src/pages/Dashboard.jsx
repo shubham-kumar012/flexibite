@@ -58,6 +58,7 @@ export default function Dashboard() {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': '1',
         },
       });
       const profileData = await profileRes.json();
@@ -75,6 +76,7 @@ export default function Dashboard() {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': '1',
         },
       });
       let targetData = await targetRes.json();
@@ -86,6 +88,7 @@ export default function Dashboard() {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
+            'ngrok-skip-browser-warning': '1',
           },
         });
         targetData = await genRes.json();

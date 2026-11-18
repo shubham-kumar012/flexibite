@@ -8,6 +8,7 @@ const getAuthHeaders = () => {
   return {
     'Content-Type': 'application/json',
     Authorization: token ? `Bearer ${token}` : '',
+    'ngrok-skip-browser-warning': '1',
   };
 };
 
@@ -130,6 +131,7 @@ export const uploadAdminFoodImage = async (id, file) => {
     method: 'POST',
     headers: {
       Authorization: token ? `Bearer ${token}` : '',
+      'ngrok-skip-browser-warning': '1',
     },
     body: formData,
   });

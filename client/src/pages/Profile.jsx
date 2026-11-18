@@ -47,6 +47,7 @@ export default function Profile() {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': '1',
         },
       });
 
@@ -80,6 +81,7 @@ export default function Profile() {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': '1',
         },
       });
       const data = await res.json();
