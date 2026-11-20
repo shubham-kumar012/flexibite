@@ -13,7 +13,7 @@ The application calculates personalized daily calorie and macronutrient targets 
 ## 🌐 Live Application & Demo Credentials
 
 - **Live Web Application**: [https://flexibite.vercel.app](https://flexibite.vercel.app)
-- **API Server Endpoint**: `https://flexibite-production.up.railway.app/api`
+- **API Server Endpoint**: `https://unselect-dictation-skylight.ngrok-free.dev/api`
 
 ### Test Account Credentials
 You can quickly explore the application using the test account below, or log in instantly via **Continue with Google**:
@@ -237,6 +237,154 @@ GOOGLE_CLIENT_ID=your_google_client_id_here
 GOOGLE_CLIENT_SECRET=your_google_client_secret_here
 GOOGLE_CALLBACK_URL=http://localhost:5002/api/auth/google/callback
 ```
+
+---
+
+## Backend Deployment (AWS EC2 + Nginx + ngrok)
+
+The FlexiBite backend is deployed on an **AWS EC2 Ubuntu instance**, managed as a persistent background process via **PM2**, reverse-proxied through **Nginx**, and exposed securely over HTTPS via **ngrok** running as an automated system service.
+
+- **Live API Base URL**: `https://unselect-dictation-skylight.ngrok-free.dev/api`
+- **Health Check**: `https://unselect-dictation-skylight.ngrok-free.dev/api/health`
+
+### Architecture Flow
+```text
+Client (Vercel Frontend)
+   ↓ (HTTPS request with 'ngrok-skip-browser-warning: 1')
+ngrok Cloud Tunnel (https://unselect-dictation-skylight.ngrok-free.dev)
+   ↓
+AWS EC2 Instance (Port 80 Inbound)
+   ↓
+Nginx Reverse Proxy (Port 80 → 127.0.0.1:5002)
+   ↓
+Node.js Express API (Port 5002 managed by PM2)
+```
+
+---
+
+### Step-by-Step Deployment Guide
+
+#### 1. Connect to EC2 Instance & Install Node.js
+Connect via SSH using your key pair:
+```bash
+ssh -i "flexibite-key.pem" ubuntu@<EC2-PUBLIC-DNS>
+
+# Update system packages
+sudo apt update && sudo apt upgrade -y
+
+# Add NodeSource repository & install Node.js 26
+curl -fsSL https://deb.nodesource.com/setup_26.x | sudo -E bash -
+sudo apt install nodejs -y
+
+# Verify installation
+node -v && npm -v
+```
+
+#### 2. Clone Repository & Setup Environment
+```bash
+git clone https://github.com/shubham-kumar012/flexibite.git
+cd flexibite/server
+npm install
+
+# Create production environment variables
+nano .env
+```
+
+#### 3. Run Backend via PM2
+Use PM2 to ensure the backend runs continuously in the background and auto-restarts on unexpected crashes or instance reboots:
+```bash
+# Install PM2 globally
+sudo npm install -g pm2
+
+# Start the server process
+pm2 start server.js --name "flexibite-api"
+
+# Save process list and generate startup script
+pm2 save
+pm2 startup
+```
+
+#### 4. Configure Nginx Reverse Proxy
+Install Nginx to receive incoming HTTP traffic on port 80 and forward it internally to `http://127.0.0.1:5002`:
+```bash
+sudo apt install nginx -y
+sudo systemctl enable nginx
+sudo systemctl start nginx
+```
+
+Edit the default Nginx configuration (`sudo nano /etc/nginx/sites-available/default`):
+```nginx
+server {
+    listen 80;
+    server_name _;
+
+    location / {
+        proxy_pass http://127.0.0.1:5002;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+Test and reload Nginx:
+```bash
+sudo nginx -t
+sudo systemctl restart nginx
+```
+> **EC2 Security Group**: Ensure your AWS EC2 instance has an Inbound Rule allowing **HTTP (Port 80)** from `0.0.0.0/0`.
+
+#### 5. Secure HTTPS Tunnel with ngrok
+To expose the backend over trusted HTTPS without needing a custom domain or manual SSL certificate management:
+
+1. **Install ngrok Agent**:
+   ```bash
+   curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
+   echo "deb https://ngrok-agent.s3.amazonaws.com bookworm main" | sudo tee /etc/apt/sources.list.d/ngrok.list
+   sudo apt update && sudo apt install ngrok -y
+   ngrok config add-authtoken YOUR_AUTH_TOKEN
+   ```
+
+2. **Configure Persistent ngrok Endpoints**:
+   Create the config directory and file at `/home/ubuntu/.config/ngrok/ngrok.yml`:
+   ```bash
+   mkdir -p /home/ubuntu/.config/ngrok
+   nano /home/ubuntu/.config/ngrok/ngrok.yml
+   ```
+   Add your tunnel definition:
+   ```yaml
+   version: "3"
+   agent:
+     authtoken: YOUR_AUTH_TOKEN
+   endpoints:
+     - name: flexibite-api
+       url: https://unselect-dictation-skylight.ngrok-free.dev
+       upstream:
+         url: 80
+   ```
+   Secure the config file:
+   ```bash
+   chmod 600 /home/ubuntu/.config/ngrok/ngrok.yml
+   ngrok config check --config /home/ubuntu/.config/ngrok/ngrok.yml
+   ```
+
+3. **Install & Start ngrok as a System Service**:
+   ```bash
+   sudo ngrok service install --config /home/ubuntu/.config/ngrok/ngrok.yml
+   sudo ngrok service start
+   sudo systemctl status ngrok
+   ```
+
+This registers ngrok as an OS service so the tunnel recovers automatically across machine reboots.
+
+> **Frontend Integration Note**: To prevent ngrok's browser warning interstitial from blocking client CORS requests, all frontend `fetch` calls include the header:
+> ```json
+> { "ngrok-skip-browser-warning": "1" }
+> ```
 
 ---
 
